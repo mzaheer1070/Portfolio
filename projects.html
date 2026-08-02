@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Live web projects by Muhammad Zaheer — Weather Dashboard, Weather App, API Dashboard, and Todo App.">
+    <meta name="description" content="Live web projects by Muhammad Zaheer — Weather App, Todo App, API Dashboard, and Weather Dashboard.">
     <title>Projects | Muhammad Zaheer</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
@@ -49,34 +49,21 @@
                 <button class="filter-button" type="button" data-filter="web" aria-pressed="false">Web apps</button>
             </div>
 
+            <!-- Project Directory List -->
             <ol class="project-directory" aria-label="Project list">
-                <li><a href="projects/weather-dashboard/index.html">Project 1 → Weather Dashboard (live site)</a></li>
-                <li><a href="projects/weather-app/index.html">Project 2 → Weather App (live site)</a></li>
+                <li><a href="projects/weather-app/index.html">Project 1 → Weather App (live site)</a></li>
+                <li><a href="projects/todo-app/index.html">Project 2 → Todo App (live site)</a></li>
                 <li><a href="projects/api-dashboard/index.html">Project 3 → API Dashboard (live site)</a></li>
-                <li><a href="projects/todo-app/index.html">Project 4 → Todo App (live site)</a></li>
+                <li><a href="projects/weather-dashboard/index.html" target="_blank" rel="noopener noreferrer">Project 4 → Weather Dashboard (live site)</a></li>
             </ol>
 
+            <!-- Project Cards Grid -->
             <div class="project-grid" data-project-grid>
-                <article class="project-card project-card--live" data-category="web" data-reveal>
-                    <div class="project-thumb project-thumb--weather" role="img" aria-label="Weather Dashboard preview"></div>
-                    <div class="project-body">
-                        <p class="project-tag">Project 1 · Live demo</p>
-                        <h2>Weather Dashboard</h2>
-                        <p>Real-time weather data with search, geolocation support, and 5-day forecast — built with OpenWeatherMap API integration.</p>
-                        <div class="project-actions">
-                            <a class="btn primary" href="projects/weather-dashboard/index.html">Visit live site</a>
-                            <button class="card-toggle" type="button" aria-expanded="false">View details</button>
-                        </div>
-                        <div class="card-details" hidden>
-                            <p>Stack: HTML, CSS, JavaScript, OpenWeatherMap API. Features city search, geolocation, real-time weather stats, and 5-day forecast.</p>
-                        </div>
-                    </div>
-                </article>
-
+                <!-- Project 1: Weather App (same tab) -->
                 <article class="project-card project-card--live" data-category="web" data-reveal>
                     <div class="project-thumb project-thumb--weather" role="img" aria-label="Weather App preview"></div>
                     <div class="project-body">
-                        <p class="project-tag">Project 2 · Live demo</p>
+                        <p class="project-tag">Project 1 · Live demo</p>
                         <h2>Weather App</h2>
                         <p>Search cities, view conditions, and switch units — a focused weather experience built as its own site.</p>
                         <div class="project-actions">
@@ -89,6 +76,24 @@
                     </div>
                 </article>
 
+                <!-- Project 2: Todo App (same tab) -->
+                <article class="project-card project-card--live" data-category="web" data-reveal>
+                    <div class="project-thumb project-thumb--todo" role="img" aria-label="Todo App preview"></div>
+                    <div class="project-body">
+                        <p class="project-tag">Project 2 · Live demo</p>
+                        <h2>Todo App</h2>
+                        <p>Add, complete, and filter tasks in a lightweight productivity app hosted separately from the portfolio.</p>
+                        <div class="project-actions">
+                            <a class="btn primary" href="projects/todo-app/index.html">Visit live site</a>
+                            <button class="card-toggle" type="button" aria-expanded="false">View details</button>
+                        </div>
+                        <div class="card-details" hidden>
+                            <p>Stack: HTML, CSS, JavaScript with local storage. Fully interactive todo list on its own site.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 3: API Dashboard (same tab) -->
                 <article class="project-card project-card--live" data-category="web" data-reveal>
                     <div class="project-thumb project-thumb--dashboard" role="img" aria-label="API Dashboard preview"></div>
                     <div class="project-body">
@@ -105,18 +110,19 @@
                     </div>
                 </article>
 
+                <!-- Project 4: Weather Dashboard (NEW TAB) -->
                 <article class="project-card project-card--live" data-category="web" data-reveal>
-                    <div class="project-thumb project-thumb--todo" role="img" aria-label="Todo App preview"></div>
+                    <div class="project-thumb project-thumb--weather" role="img" aria-label="Weather Dashboard preview"></div>
                     <div class="project-body">
                         <p class="project-tag">Project 4 · Live demo</p>
-                        <h2>Todo App</h2>
-                        <p>Add, complete, and filter tasks in a lightweight productivity app hosted separately from the portfolio.</p>
+                        <h2>Weather Dashboard</h2>
+                        <p>Real-time weather data with search, geolocation support, and 5-day forecast — built with OpenWeatherMap API integration.</p>
                         <div class="project-actions">
-                            <a class="btn primary" href="projects/todo-app/index.html">Visit live site</a>
+                            <a class="btn primary" href="projects/weather-dashboard/index.html" target="_blank" rel="noopener noreferrer">Visit live site</a>
                             <button class="card-toggle" type="button" aria-expanded="false">View details</button>
                         </div>
                         <div class="card-details" hidden>
-                            <p>Stack: HTML, CSS, JavaScript with local storage. Fully interactive todo list on its own site.</p>
+                            <p>Stack: HTML, CSS, JavaScript, OpenWeatherMap API. Features city search, geolocation, real-time weather stats, and 5-day forecast.</p>
                         </div>
                     </div>
                 </article>
