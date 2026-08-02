@@ -2,6 +2,7 @@ Muhammad Zaheer | Portfolio
 A modern, responsive portfolio website showcasing my projects, skills, and contact information.
 
 🔗 View Live Demo
+https://mzaheer1070.github.io/Portfolio/
 
 📌 About
 This is my personal portfolio where I showcase my work as a Computer Science student. It includes web development projects, AI experiments, networking demos, and a functional contact form.
