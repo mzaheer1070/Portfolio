@@ -131,8 +131,7 @@ function getLocationWeather() {
             const { latitude, longitude, accuracy } = position.coords;
             console.log(`✅ Location received - Lat: ${latitude}, Lon: ${longitude}, Accuracy: ${accuracy}m`);
             
-            // Use Nominatim (free, no auth needed) to get city name from coordinates
-            // Then fetch weather
+            // Use OpenWeatherMap reverse geocoding (more accurate)
             reverseGeocodeAndFetchWeather(latitude, longitude);
         },
         (error) => {
@@ -164,28 +163,32 @@ function getLocationWeather() {
     );
 }
 
-// Reverse Geocode using Nominatim and fetch weather
+// Reverse Geocode using OpenWeatherMap and fetch weather
 async function reverseGeocodeAndFetchWeather(lat, lon) {
     try {
         console.log(`🌤️ Fetching weather for coordinates: ${lat}, ${lon}`);
         
-        // Use Nominatim to get city name from coordinates (free, no CORS issues)
-        console.log('📍 Getting city name from coordinates using Nominatim...');
-        const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
-        
-        const nominatimResponse = await fetch(nominatimUrl);
-        
-        if (!nominatimResponse.ok) {
-            console.warn('Nominatim reverse geocoding failed, will use API response');
+        // Use OpenWeatherMap reverse geocoding (more accurate than Nominatim)
+        console.log('📍 Getting city name from coordinates using OpenWeatherMap...');
+        const geoUrl = `${BASE_URL}/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`;
+        const geoResponse = await fetch(geoUrl);
+
+        if (!geoResponse.ok) {
+            throw new Error(`Failed to get location name: ${geoResponse.status}`);
         }
-        
-        const nominatimData = await nominatimResponse.json();
-        const cityName = nominatimData.address?.city || nominatimData.address?.town || nominatimData.address?.village || 'Your Location';
-        const countryCode = nominatimData.address?.country_code?.toUpperCase() || 'PK';
-        
-        console.log(`🏙️ City from Nominatim: ${cityName}, ${countryCode}`);
-        
-        // Now fetch weather with simple, clean URL
+
+        const geoData = await geoResponse.json();
+
+        if (geoData.length === 0) {
+            throw new Error('Location not found');
+        }
+
+        const cityName = geoData[0].name;
+        const countryCode = geoData[0].country || 'PK';
+
+        console.log(`🏙️ City from OpenWeatherMap: ${cityName}, ${countryCode}`);
+
+        // Now fetch weather
         console.log(`📡 Fetching weather from OpenWeatherMap...`);
         const weatherUrl = `${BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
         const weatherResponse = await fetch(weatherUrl);
@@ -198,7 +201,6 @@ async function reverseGeocodeAndFetchWeather(lat, lon) {
         console.log('✅ Weather API Response received:');
         console.log('   API City:', weatherData.name);
         console.log('   API Country:', weatherData.sys.country);
-        console.log('Full Response:', weatherData);
 
         // Get forecast data
         const forecastUrl = `${BASE_URL}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
@@ -210,7 +212,7 @@ async function reverseGeocodeAndFetchWeather(lat, lon) {
 
         const forecastData = await forecastResponse.json();
 
-        // Display data using Nominatim's city name (which is correct) but OpenWeatherMap's weather data
+        // Display data
         console.log(`📍 Displaying weather for: ${cityName}, ${countryCode}`);
         displayWeather(weatherData, cityName, countryCode);
         displayForecast(forecastData);
