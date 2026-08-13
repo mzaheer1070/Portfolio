@@ -66,17 +66,21 @@ Portfolio/
 ├── projects.html
 ├── contact.html
 │
-├── style.css
-├── script.js
-├── firebase.js
-├── portfolio-links.js
+├── css/
+│   └── style.css
+│
+├── js/
+│   ├── script.js
+│   ├── firebase.js
+│   └── portfolio-links.js
 │
 ├── Images/
 │
 ├── projects/
 │   ├── weather-app/
 │   ├── todo-app/
-│   └── api-dashboard/
+│   ├── api-dashboard/
+│   └── weather-dashboard/
 │
 └── .github/
     └── workflows/
@@ -87,12 +91,15 @@ Portfolio/
 
 ## 🏷️ Version History
 
-| Version    | Release Notes                                                                |
-| ---------- | ---------------------------------------------------------------------------- |
-| **v2.1.1** | Fixed weather dashboard geolocation accuracy and improved location detection |
-| **v2.1.0** | Added weather dashboard with live API integration                            |
-| **v2.0.0** | Added Firebase Firestore contact form                                        |
-| **v1.0.0** | Initial portfolio release                                                    |
+| Version    | Release Notes                                                                       |
+| ---------- | ----------------------------------------------------------------------------------- |
+| **v2.1.4** | Style: Make About section full-width; remove unused screenshot image                |
+| **v2.1.3** | Fix: Use OpenWeatherMap reverse geocoding for accurate city detection               |
+| **v2.1.2** | Update projects page - reorder projects and open Weather Dashboard in new tab       |
+| **v2.1.1** | Fix: Correct geolocation to display Islamabad instead of Allahabad                  |
+| **v2.1.0** | Add Weather Dashboard with live API integration and 5-day forecast                  |
+| **v2.0.0** | Add Firebase Firestore contact form with form validation                            |
+| **v1.0.0** | Initial portfolio release with GitHub Pages deployment                              |
 
 ---
 
