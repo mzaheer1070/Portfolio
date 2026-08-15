@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="About Muhammad Zaheer, a computer science student focused on web development, AI, and networking.">
-    <title>About | Muhammad Zaheer</title>
+    <meta name="description" content="About - Web and software developer creating high-performance applications, API tools, and intuitive interfaces.">
+    <title>About | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
 </head>
@@ -13,9 +16,12 @@
 
 <header class="site-header">
     <nav class="navbar" aria-label="Main navigation">
-        <a class="brand" href="index.html">Muhammad Zaheer</a>
+        <a class="brand" href="index.html" aria-label="Portfolio Homepage">
+            <span class="brand-dot" aria-hidden="true"></span>
+            <span>Portfolio</span>
+        </a>
 
-        <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-navigation">
             <span></span>
             <span></span>
             <span></span>
@@ -26,8 +32,22 @@
             <a class="nav-link" href="about.html">About</a>
             <a class="nav-link" href="projects.html">Projects</a>
             <a class="nav-link" href="contact.html">Contact</a>
-            <button class="theme-toggle" type="button" aria-label="Switch color theme" data-theme-toggle>
-                <span class="theme-icon" aria-hidden="true"></span>
+            
+            <button class="theme-toggle" type="button" aria-label="Toggle color theme" data-theme-toggle>
+                <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
             </button>
         </div>
     </nav>
@@ -36,65 +56,105 @@
 <main id="main">
     <section class="page-hero">
         <div class="container" data-reveal>
-            <p class="eyebrow">About Me</p>
-            <h1>CS student building across web, AI, and networks.</h1>
-            <p>I study at NUTECH and enjoy projects where software has to be clear, reliable, and easy to use.</p>
+            <span class="eyebrow">About & Philosophy</span>
+            <h1>Crafting fast, intuitive web applications and tools.</h1>
+            <p>I build web software with an emphasis on clarity, responsiveness, maintainable code architecture, and high performance.</p>
         </div>
     </section>
 
     <section class="section">
         <div class="container about-layout">
+            <!-- Left Profile Card -->
             <aside class="profile-panel" data-reveal>
-                <img src="Images/Me.png" alt="Portrait of Muhammad Zaheer" loading="lazy">
-                <div>
-                    <h2>Muhammad Zaheer</h2>
-                    <p>Computer Science Student</p>
+                <div class="profile-avatar-wrap">
+                    <img src="Images/MEss.jpeg" alt="Developer portrait" loading="lazy">
                 </div>
-                <ul class="quick-list" aria-label="Profile highlights">
-                    <li>Web development</li>
-                    <li>Artificial intelligence</li>
-                    <li>Computer networks</li>
-                    <li>Software engineering</li>
+                <div class="profile-info">
+                    <h2>Web & Software Developer</h2>
+                    <p class="profile-tagline">Frontend, APIs & Systems</p>
+                </div>
+                <ul class="profile-meta-list" aria-label="Profile metadata">
+                    <li class="profile-meta-item">
+                        <span class="profile-meta-icon" aria-hidden="true">💻</span>
+                        <span>Specialization: Web Applications & UI</span>
+                    </li>
+                    <li class="profile-meta-item">
+                        <span class="profile-meta-icon" aria-hidden="true">⚡</span>
+                        <span>Focus: Vanilla JS, REST APIs, Cloud Backends</span>
+                    </li>
+                    <li class="profile-meta-item">
+                        <span class="profile-meta-icon" aria-hidden="true">✨</span>
+                        <span>Design: Clean, Responsive & Accessible</span>
+                    </li>
                 </ul>
             </aside>
 
+            <!-- Right Interactive Details Panel -->
             <div class="detail-panel" data-reveal>
-                <div class="tabs" role="tablist" aria-label="About details" data-tabs>
-                    <button class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="story-panel" id="story-tab" data-tab="story-panel">Story</button>
-                    <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="skills-panel" id="skills-tab" data-tab="skills-panel">Skills</button>
-                    <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="goals-panel" id="goals-tab" data-tab="goals-panel">Goals</button>
+                <div class="tabs" role="tablist" aria-label="About navigation tabs" data-tabs>
+                    <button class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="story-panel" id="story-tab" data-tab="story-panel">Philosophy</button>
+                    <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="skills-panel" id="skills-tab" data-tab="skills-panel">Technical Skills</button>
+                    <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="goals-panel" id="goals-tab" data-tab="goals-panel">Development Focus</button>
                 </div>
 
+                <!-- Tab 1: Philosophy -->
                 <div class="tab-panel" id="story-panel" role="tabpanel" aria-labelledby="story-tab">
-                    <h2>How I Work</h2>
-                    <p>I like projects that combine logic with design. My strongest work starts with understanding the problem, then shaping it into a simple interface and a maintainable code structure.</p>
-                    <p>Current interests include responsive frontend development, machine learning prototypes, and network design simulations.</p>
+                    <h2>How I Approach Software</h2>
+                    <p>
+                        Great software begins with a clear understanding of the user's problem. I focus on writing modular, lightweight code that loads fast and performs reliably on all devices.
+                    </p>
+                    <p>
+                        Whether designing interactive client-side apps, connecting to external REST APIs, or creating responsive interfaces, I prioritize clean typography, accessible controls, and seamless interactions.
+                    </p>
                 </div>
 
+                <!-- Tab 2: Skills -->
                 <div class="tab-panel" id="skills-panel" role="tabpanel" aria-labelledby="skills-tab" hidden>
-                    <h2>Core Skills</h2>
-                    <div class="skill-meter">
-                        <span>HTML, CSS, JavaScript</span>
-                        <div class="meter"><span style="--value: 88%"></span></div>
-                    </div>
-                    <div class="skill-meter">
-                        <span>AI and ML Concepts</span>
-                        <div class="meter"><span style="--value: 76%"></span></div>
-                    </div>
-                    <div class="skill-meter">
-                        <span>Networking Fundamentals</span>
-                        <div class="meter"><span style="--value: 80%"></span></div>
-                    </div>
-                    <div class="skill-meter">
-                        <span>Software Engineering</span>
-                        <div class="meter"><span style="--value: 74%"></span></div>
+                    <h2>Proficiencies & Capabilities</h2>
+                    <div class="skill-meters-list">
+                        <div class="skill-meter">
+                            <div class="skill-meter-header">
+                                <span>Modern JavaScript (ES6+, DOM, Async/Await)</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="meter-bar"><div class="meter-fill" style="--value: 90%"></div></div>
+                        </div>
+
+                        <div class="skill-meter">
+                            <div class="skill-meter-header">
+                                <span>Semantic HTML5 & Responsive CSS3 (Flexbox/Grid)</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="meter-bar"><div class="meter-fill" style="--value: 92%"></div></div>
+                        </div>
+
+                        <div class="skill-meter">
+                            <div class="skill-meter-header">
+                                <span>REST APIs, Fetch & Asynchronous Networking</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="meter-bar"><div class="meter-fill" style="--value: 85%"></div></div>
+                        </div>
+
+                        <div class="skill-meter">
+                            <div class="skill-meter-header">
+                                <span>Firebase Firestore & Cloud Integrations</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="meter-bar"><div class="meter-fill" style="--value: 80%"></div></div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Tab 3: Goals -->
                 <div class="tab-panel" id="goals-panel" role="tabpanel" aria-labelledby="goals-tab" hidden>
-                    <h2>What I Am Improving</h2>
-                    <p>I am focusing on cleaner UI patterns, better JavaScript structure, practical AI systems, and projects that are easy to explain, test, and improve.</p>
-                    <a class="btn primary" href="projects.html">See Project Work</a>
+                    <h2>What I Am Building</h2>
+                    <p>
+                        Continuously expanding my portfolio of interactive tools, productivity applications, and live dashboards. Open to project collaborations and technical challenges.
+                    </p>
+                    <div>
+                        <a class="btn primary" href="projects.html">View Live Projects →</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,7 +162,15 @@
 </main>
 
 <footer class="site-footer">
-    <p>&copy; 2026 Muhammad Zaheer. Built with HTML, CSS, and JavaScript.</p>
+    <div class="container footer-content">
+        <div class="footer-links">
+            <a class="footer-link" href="index.html">Home</a>
+            <a class="footer-link" href="about.html">About</a>
+            <a class="footer-link" href="projects.html">Projects</a>
+            <a class="footer-link" href="contact.html">Contact</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Portfolio. Built with clean HTML5, modern CSS3, and JavaScript.</p>
+    </div>
 </footer>
 </body>
 </html>

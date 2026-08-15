@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Muhammad Zaheer portfolio featuring web, AI, and networking projects.">
-    <title>Muhammad Zaheer | Portfolio</title>
+    <meta name="description" content="Personal portfolio featuring interactive web applications, API dashboards, and modern UI projects.">
+    <title>Portfolio | Web & Software Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
 </head>
@@ -13,9 +16,12 @@
 
 <header class="site-header">
     <nav class="navbar" aria-label="Main navigation">
-        <a class="brand" href="index.html">Muhammad Zaheer</a>
+        <a class="brand" href="index.html" aria-label="Portfolio Homepage">
+            <span class="brand-dot" aria-hidden="true"></span>
+            <span>Portfolio</span>
+        </a>
 
-        <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-navigation">
             <span></span>
             <span></span>
             <span></span>
@@ -26,77 +32,137 @@
             <a class="nav-link" href="about.html">About</a>
             <a class="nav-link" href="projects.html">Projects</a>
             <a class="nav-link" href="contact.html">Contact</a>
-            <button class="theme-toggle" type="button" aria-label="Switch color theme" data-theme-toggle>
-                <span class="theme-icon" aria-hidden="true"></span>
+            
+            <button class="theme-toggle" type="button" aria-label="Toggle color theme" data-theme-toggle>
+                <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
             </button>
         </div>
     </nav>
 </header>
 
 <main id="main">
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-copy" data-reveal>
-            <p class="eyebrow">Computer Science Student</p>
-            <h1>Hi, I'm Muhammad Zaheer.</h1>
-            <p class="hero-subtitle">I build practical web, AI, and networking projects with clean interfaces and useful details.</p>
-            <p class="role-line">Currently exploring <span class="typed-role" data-roles="responsive websites|AI prototypes|network systems|polished user interfaces">responsive websites</span></p>
+            <div class="status-badge">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <span>Open to Projects & Collaboration</span>
+            </div>
+            
+            <h1>Building modern web apps with clean code and great UX.</h1>
+            
+            <p class="lead-text">
+                Developing responsive web applications, live API dashboards, and interactive user interfaces with clean architecture and performant vanilla JavaScript.
+            </p>
+            
+            <div class="role-line">
+                <span>Specializing in</span>
+                <span class="typed-role-wrapper">
+                    <span class="typed-role" data-roles="Responsive Web Apps|Interactive Dashboards|REST API Integrations|Clean User Interfaces">Responsive Web Apps</span>
+                    <span class="typed-cursor" aria-hidden="true"></span>
+                </span>
+            </div>
+            
             <div class="hero-actions">
-                <a class="btn primary" href="projects.html">View Projects</a>
-                <a class="btn secondary" href="contact.html">Contact Me</a>
+                <a class="btn primary" href="projects.html">Explore Projects →</a>
+                <a class="btn secondary" href="contact.html">Get in Touch</a>
             </div>
         </div>
 
         <div class="hero-media" data-reveal>
-            <img src="Images/Me.png" alt="Portrait of Muhammad Zaheer">
-            <div class="status-chip">Open to student projects</div>
-        </div>
-    </section>
-
-    <section class="stats-strip container" aria-label="Portfolio highlights">
-        <article class="stat" data-reveal>
-            <strong data-count-to="3">0</strong>
-            <span>Featured projects</span>
-        </article>
-        <article class="stat" data-reveal>
-            <strong data-count-to="4">0</strong>
-            <span>Focus areas</span>
-        </article>
-        <article class="stat" data-reveal>
-            <strong data-count-to="100">0</strong>
-            <span>Curiosity level</span>
-        </article>
-    </section>
-
-    <section class="section">
-        <div class="container" data-reveal>
-            <p class="eyebrow">Live demos</p>
-            <h2>Try my project websites</h2>
-            <p class="hero-subtitle">Each app runs on its own page and links back to this portfolio.</p>
-            <div class="home-project-links">
-                <a href="projects/weather-app/index.html">Weather App <span>Live API weather</span></a>
-                <a href="projects/api-dashboard/index.html">API Dashboard <span>Metrics dashboard</span></a>
-                <a href="projects/todo-app/index.html">Todo App <span>Tasks in your browser</span></a>
+            <div class="hero-avatar-frame">
+                <img src="Images/MEss.jpeg" alt="Developer portrait" width="380" height="456">
             </div>
         </div>
     </section>
 
-    <section class="section">
-        <div class="container feature-layout">
-            <div class="feature-image" data-reveal>
-                <img src="Images/Screenshot 2025-11-03 114019.png" alt="Portfolio project preview screenshot" loading="lazy">
+    <!-- Stats Section -->
+    <section class="section-tight" aria-label="Portfolio highlights">
+        <div class="container">
+            <div class="stats-strip">
+                <article class="stat-card" data-reveal>
+                    <strong class="stat-number" data-count-to="4">0</strong>
+                    <span class="stat-label">Live Projects Hosted</span>
+                    <span class="stat-desc">Interactive web applications</span>
+                </article>
+                <article class="stat-card" data-reveal>
+                    <strong class="stat-number" data-count-to="100">0</strong>
+                    <span class="stat-label">% Responsive Design</span>
+                    <span class="stat-desc">Mobile, tablet & desktop ready</span>
+                </article>
+                <article class="stat-card" data-reveal>
+                    <strong class="stat-number" data-count-to="100">0</strong>
+                    <span class="stat-label">% Commitment to Quality</span>
+                    <span class="stat-desc">Semantic HTML & modern CSS</span>
+                </article>
             </div>
-            <div class="feature-copy" data-reveal>
-                <p class="eyebrow">About Me</p>
-                <h2>Learning by building things that solve real problems.</h2>
-                <p>I am a CS student exploring web development, AI, networking, and software engineering. I like turning course ideas into working demos with a clear structure and usable design.</p>
-                <a class="text-link" href="about.html">Read more about my skills</a>
+        </div>
+    </section>
+
+    <!-- Featured Live Apps Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header" data-reveal>
+                <span class="eyebrow">Interactive Demos</span>
+                <h2>Featured Live Applications</h2>
+                <p class="lead-text">Each application runs independently on its own dedicated site with live APIs and responsive layouts.</p>
+            </div>
+
+            <div class="home-project-links" data-reveal>
+                <a class="home-project-card" href="projects/weather-dashboard/index.html" target="_blank" rel="noopener noreferrer">
+                    <div class="home-project-card-header">
+                        <span class="project-tag">OpenWeather API</span>
+                        <span class="home-project-card-arrow" aria-hidden="true">↗</span>
+                    </div>
+                    <strong>Weather Dashboard</strong>
+                    <span>Live 5-day forecast, geolocation weather stats & multi-city search.</span>
+                </a>
+
+                <a class="home-project-card" href="projects/api-dashboard/index.html">
+                    <div class="home-project-card-header">
+                        <span class="project-tag">HTTP Prober</span>
+                        <span class="home-project-card-arrow" aria-hidden="true">↗</span>
+                    </div>
+                    <strong>API Status Dashboard</strong>
+                    <span>Real-time REST endpoint monitoring with true latency metrics.</span>
+                </a>
+
+                <a class="home-project-card" href="projects/todo-app/index.html">
+                    <div class="home-project-card-header">
+                        <span class="project-tag">Productivity App</span>
+                        <span class="home-project-card-arrow" aria-hidden="true">↗</span>
+                    </div>
+                    <strong>Todo Application</strong>
+                    <span>Interactive task management with persistent browser local storage.</span>
+                </a>
             </div>
         </div>
     </section>
 </main>
 
 <footer class="site-footer">
-    <p>&copy; 2026 Muhammad Zaheer. Built with HTML, CSS, and JavaScript.</p>
+    <div class="container footer-content">
+        <div class="footer-links">
+            <a class="footer-link" href="index.html">Home</a>
+            <a class="footer-link" href="about.html">About</a>
+            <a class="footer-link" href="projects.html">Projects</a>
+            <a class="footer-link" href="contact.html">Contact</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 Portfolio. Built with clean HTML5, modern CSS3, and JavaScript.</p>
+    </div>
 </footer>
 </body>
 </html>

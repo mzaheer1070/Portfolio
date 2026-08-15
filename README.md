@@ -1,6 +1,6 @@
-# Muhammad Zaheer | Portfolio
+# Portfolio
 
-> A modern, responsive portfolio website showcasing my projects, technical skills, and software development journey.
+> A modern, high-performance, and responsive portfolio website showcasing web applications, API tooling, and interactive projects.
 
 🔗 **Live Demo:** https://mzaheer1070.github.io/Portfolio/
 
@@ -8,9 +8,7 @@
 
 ## 📌 About
 
-This is my personal portfolio website where I showcase my work as a Computer Science student.
-
-The portfolio includes web development projects, API integrations, AI experiments, and a functional contact system powered by Firebase Firestore.
+This is a personal portfolio website featuring web development projects, API integrations, live dashboards, and a functional contact system powered by Firebase Firestore.
 
 ---
 
@@ -18,13 +16,14 @@ The portfolio includes web development projects, API integrations, AI experiment
 
 | Feature                  | Description                                               |
 | ------------------------ | --------------------------------------------------------- |
-| 🎨 Modern UI             | Clean interface with dark/light theme support             |
-| 📱 Responsive Design     | Optimized for desktop, tablet, and mobile devices         |
+| 🎨 Modern UI & Design    | Fluid HSL design tokens with polished dark/light theme    |
+| 🔤 Google Typography     | Plus Jakarta Sans & JetBrains Mono for crisp readability  |
+| 📱 Responsive Layout     | Fully optimized across mobile, tablet, and widescreen     |
 | 🔥 Firebase Contact Form | Contact messages stored securely using Firestore          |
-| 🌤️ Weather Dashboard    | Real-time weather data with geolocation support           |
+| 🌤️ Weather Dashboard    | Real-time weather data with geolocation & 5-day forecast  |
 | 📊 API Dashboard         | Real HTTP API monitoring with response status and latency |
 | ✅ Todo Application       | Task management with browser persistence                  |
-| 📂 Project Showcase      | Organized collection of live projects                     |
+| 📂 Project Showcase      | Organized collection of live standalone projects          |
 | 🏷️ Version Control      | Semantic versioning with Git tags                         |
 | 🚀 CI/CD Deployment      | Automatic deployment using GitHub Actions                 |
 
@@ -34,20 +33,21 @@ The portfolio includes web development projects, API integrations, AI experiment
 
 ### Frontend
 
-* HTML5
-* CSS3
-* JavaScript (ES6+)
+* HTML5 (Semantic & Accessible)
+* CSS3 (Vanilla CSS, HSL Tokens, Glassmorphism, Responsive Grid/Flex)
+* JavaScript (ES6+ Modules, IntersectionObserver, Animations)
+* Google Fonts (Plus Jakarta Sans & JetBrains Mono)
 
 ### Backend / Services
 
 * Firebase Firestore
+* OpenWeatherMap API
 * Public REST APIs
 
 ### Development Tools
 
-* Git
-* GitHub
-* GitHub Actions
+* Git & GitHub
+* GitHub Actions (CI/CD)
 * VS Code / GitHub Codespaces
 
 ### Hosting
@@ -65,18 +65,25 @@ Portfolio/
 ├── about.html
 ├── projects.html
 ├── contact.html
+├── README.md
 │
-├── style.css
-├── script.js
-├── firebase.js
-├── portfolio-links.js
+├── css/
+│   └── style.css
+│
+├── js/
+│   ├── script.js
+│   ├── firebase.js
+│   └── portfolio-links.js
 │
 ├── Images/
+│   └── MEss.jpeg
 │
 ├── projects/
 │   ├── weather-app/
+│   ├── weather-dashboard/
 │   ├── todo-app/
-│   └── api-dashboard/
+│   ├── api-dashboard/
+│   └── shared/
 │
 └── .github/
     └── workflows/
@@ -89,6 +96,7 @@ Portfolio/
 
 | Version    | Release Notes                                                                |
 | ---------- | ---------------------------------------------------------------------------- |
+| **v3.0.0** | Major UI redesign, HSL dark/light design system, Google typography, privacy updates, and MEss profile |
 | **v2.1.1** | Fixed weather dashboard geolocation accuracy and improved location detection |
 | **v2.1.0** | Added weather dashboard with live API integration                            |
 | **v2.0.0** | Added Firebase Firestore contact form                                        |
@@ -127,24 +135,8 @@ http://localhost:8000
 
 ---
 
-## 📬 Contact
-
-**Muhammad Zaheer**
-
-* Email: [mzaheer1070@gmail.com](mailto:mzaheer1070@gmail.com)
-* GitHub: https://github.com/mzaheer1070
-* Portfolio: https://mzaheer1070.github.io/Portfolio/
-
----
-
 ## 🤝 Feedback
 
-Suggestions and improvements are welcome.
+Suggestions and improvements are welcome. Feel free to open an issue or share feedback about the project.
 
-Feel free to open an issue or share feedback about the project.
-
----
-
-⭐ If you find this project interesting, consider giving it a star.
-
-Built with ❤️ by **Muhammad Zaheer**
+⭐ If you find this project interesting, consider giving it a star!
