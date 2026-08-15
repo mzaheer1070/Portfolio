@@ -97,11 +97,12 @@ Portfolio/
 | Version    | Release Notes                                                                |
 | ---------- | ---------------------------------------------------------------------------- |
 | **v3.0.0** | Major UI redesign, HSL dark/light design system, Google typography, privacy updates, and MEss profile |
-| **v2.1.1** | Fixed weather dashboard geolocation accuracy and improved location detection |
-| **v2.1.0** | Added weather dashboard with live API integration                            |
-| **v2.0.0** | Added Firebase Firestore contact form                                        |
-| **v1.0.0** | Initial portfolio release                                                    |
-
+| **v2.1.3** | Fix: Use OpenWeatherMap reverse geocoding for accurate city detection               |
+| **v2.1.2** | Update projects page - reorder projects and open Weather Dashboard in new tab       |
+| **v2.1.1** | Fix: Correct geolocation to display Islamabad instead of Allahabad                  |
+| **v2.1.0** | Add Weather Dashboard with live API integration and 5-day forecast                  |
+| **v2.0.0** | Add Firebase Firestore contact form with form validation                            |
+| **v1.0.0** | Initial portfolio release with GitHub Pages deployment                              |
 ---
 
 ## 🚀 Run Locally
@@ -140,3 +141,4 @@ http://localhost:8000
 Suggestions and improvements are welcome. Feel free to open an issue or share feedback about the project.
 
 ⭐ If you find this project interesting, consider giving it a star!
+git
