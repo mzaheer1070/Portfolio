@@ -155,7 +155,13 @@
                         <p>Your selected location, powered by OpenStreetMap.</p>
                     </div>
                 </div>
-                <div id="weatherMap" aria-label="Interactive weather map"></div>
+                <div class="map-insights" aria-label="Live weather map details">
+                    <div><span>☁️ Cloud cover</span><strong id="mapCloud">--</strong></div>
+                    <div><span>🌧️ Rain now</span><strong id="mapRain">--</strong></div>
+                    <div><span>💨 Wind</span><strong id="mapWind">--</strong></div>
+                    <div><span>👁️ Visibility</span><strong id="mapVisibility">--</strong></div>
+                </div>
+                <div id="weatherMap" aria-label="Interactive location map"></div>
             </section>
 
         </div>
@@ -172,6 +178,6 @@
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="script.js?v=open-meteo-1"></script>
+    <script src="script.js?v=open-meteo-2"></script>
 </body>
 </html>
