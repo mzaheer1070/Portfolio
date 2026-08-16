@@ -6,7 +6,25 @@
     <title>Weather Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-scene="idle">
+    <div id="weatherScene" class="weather-scene" aria-hidden="true">
+        <div class="sky"></div>
+        <div class="sun-wrap">
+            <div class="sun-rays"></div>
+            <div class="sun"></div>
+        </div>
+        <div class="moon"></div>
+        <div class="stars" id="stars"></div>
+        <div class="clouds" id="clouds"></div>
+        <div class="rain" id="rain"></div>
+        <div class="lightning"></div>
+        <div class="snow" id="snow"></div>
+        <div class="wind" id="wind"></div>
+        <div class="fog-layer fog-one"></div>
+        <div class="fog-layer fog-two"></div>
+        <div class="vignette"></div>
+    </div>
+
     <div class="container">
         <!-- Header -->
         <header class="header">

@@ -98,6 +98,7 @@ async function fetchWeather(city) {
         // Display data
         displayWeather(weatherData, name, country);
         displayForecast(forecastData);
+        applyWeatherAtmosphere(weatherData);
 
         showLoading(false);
         showDashboard();
@@ -216,6 +217,7 @@ async function reverseGeocodeAndFetchWeather(lat, lon) {
         console.log(`📍 Displaying weather for: ${cityName}, ${countryCode}`);
         displayWeather(weatherData, cityName, countryCode);
         displayForecast(forecastData);
+        applyWeatherAtmosphere(weatherData);
 
         showLoading(false);
         showDashboard();
@@ -296,6 +298,116 @@ function displayForecast(data) {
     });
 }
 
+function applyWeatherAtmosphere(data) {
+    const weatherMain = data.weather?.[0]?.main || 'Clear';
+    const windSpeed = data.wind?.speed || 0;
+    const now = Math.floor(Date.now() / 1000);
+    const isNight = data.sys
+        ? now < data.sys.sunrise || now > data.sys.sunset
+        : false;
+
+    let scene = 'clouds';
+
+    switch (weatherMain) {
+        case 'Clear':
+            scene = isNight ? 'night' : 'sun';
+            break;
+        case 'Clouds':
+            scene = 'clouds';
+            break;
+        case 'Rain':
+            scene = 'rain';
+            break;
+        case 'Drizzle':
+            scene = 'drizzle';
+            break;
+        case 'Thunderstorm':
+            scene = 'thunder';
+            break;
+        case 'Snow':
+            scene = 'snow';
+            break;
+        case 'Mist':
+        case 'Fog':
+        case 'Haze':
+        case 'Smoke':
+            scene = 'fog';
+            break;
+        case 'Dust':
+        case 'Sand':
+        case 'Ash':
+        case 'Squall':
+        case 'Tornado':
+            scene = 'wind';
+            break;
+        default:
+            scene = 'clouds';
+    }
+
+    document.body.dataset.scene = scene;
+    document.body.classList.toggle('windy', windSpeed >= 8);
+}
+
+function createParticles() {
+    const stars = document.getElementById('stars');
+    const clouds = document.getElementById('clouds');
+    const rain = document.getElementById('rain');
+    const snow = document.getElementById('snow');
+    const wind = document.getElementById('wind');
+
+    if (!stars || stars.childElementCount) return;
+
+    for (let i = 0; i < 70; i += 1) {
+        const star = document.createElement('span');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 70}%`;
+        star.style.animationDelay = `${Math.random() * 4}s`;
+        star.style.animationDuration = `${2 + Math.random() * 3}s`;
+        stars.appendChild(star);
+    }
+
+    for (let i = 0; i < 8; i += 1) {
+        const cloud = document.createElement('div');
+        cloud.className = `cloud cloud-${(i % 4) + 1}`;
+        cloud.style.top = `${6 + (i * 9)}%`;
+        cloud.style.animationDuration = `${28 + i * 8}s`;
+        cloud.style.animationDelay = `${-i * 6}s`;
+        cloud.style.opacity = `${0.35 + (i % 3) * 0.15}`;
+        clouds.appendChild(cloud);
+    }
+
+    for (let i = 0; i < 90; i += 1) {
+        const drop = document.createElement('span');
+        drop.className = 'drop';
+        drop.style.left = `${Math.random() * 100}%`;
+        drop.style.animationDuration = `${0.45 + Math.random() * 0.55}s`;
+        drop.style.animationDelay = `${Math.random() * 2}s`;
+        drop.style.height = `${12 + Math.random() * 18}px`;
+        rain.appendChild(drop);
+    }
+
+    for (let i = 0; i < 55; i += 1) {
+        const flake = document.createElement('span');
+        flake.className = 'flake';
+        flake.style.left = `${Math.random() * 100}%`;
+        flake.style.animationDuration = `${6 + Math.random() * 8}s`;
+        flake.style.animationDelay = `${Math.random() * 6}s`;
+        flake.style.width = flake.style.height = `${3 + Math.random() * 6}px`;
+        snow.appendChild(flake);
+    }
+
+    for (let i = 0; i < 24; i += 1) {
+        const streak = document.createElement('span');
+        streak.className = 'gust';
+        streak.style.top = `${Math.random() * 100}%`;
+        streak.style.animationDuration = `${1.4 + Math.random() * 2.2}s`;
+        streak.style.animationDelay = `${Math.random() * 3}s`;
+        streak.style.width = `${80 + Math.random() * 160}px`;
+        wind.appendChild(streak);
+    }
+}
+
 // Format Time
 function formatTime(timestamp) {
     const date = new Date(timestamp * 1000);
@@ -332,4 +444,5 @@ function clearError() {
 }
 
 // Initialize
+createParticles();
 showEmpty();
