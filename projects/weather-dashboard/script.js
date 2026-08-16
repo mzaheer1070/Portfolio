@@ -1,4 +1,4 @@
-console.info('Weather Dashboard build: open-meteo-1');
+console.info('Weather Dashboard build: open-meteo-2');
 
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
@@ -47,11 +47,13 @@ function useLocation() {
   navigator.geolocation.getCurrentPosition(async function (position) {
     try {
       const latitude = position.coords.latitude, longitude = position.coords.longitude;
-      const response = await fetch(GEOCODING_URL + '?latitude=' + latitude + '&longitude=' + longitude + '&count=1&language=en&format=json');
+      const response = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + latitude + '&lon=' + longitude + '&zoom=10&addressdetails=1');
       const result = await response.json();
-      const place = result.results && result.results[0];
-      await loadWeather(latitude, longitude, place ? place.name : 'Your location', place ? place.country_code : '');
-    } catch (error) { showLoading(false); showError('Unable to load weather for your location.'); }
+      const address = result.address || {};
+      const city = address.city || address.town || address.village || address.county || result.display_name || 'Your location';
+      const country = address.country_code ? address.country_code.toUpperCase() : '';
+      await loadWeather(latitude, longitude, city, country);
+    } catch (error) { await loadWeather(position.coords.latitude, position.coords.longitude, 'Your location', ''); }
   }, function () { showLoading(false); showError('Location access was denied. Search for a city instead.'); }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 300000 });
 }
 
@@ -67,9 +69,13 @@ async function loadWeather(latitude, longitude, city, country) {
   displayWeather(data, city, country);
   displayForecast(data.daily);
   const details = condition(data.current.weather_code);
-  document.body.dataset.scene = data.current.is_day ? details[2] : 'night';
+  const scene = data.current.is_day ? details[2] : 'night';
+  document.body.dataset.scene = scene;
   document.body.classList.toggle('windy', data.current.wind_speed_10m >= 28);
+  activeSoundScene = scene;
+  refreshAmbientSound();
   updateMap(latitude, longitude, city);
+  updateMapInsights(data.current);
   showLoading(false); showDashboard();
 }
 
@@ -102,6 +108,12 @@ function displayForecast(daily) {
   });
 }
 
+function updateMapInsights(now) {
+  document.getElementById('mapCloud').textContent = now.cloud_cover + '%';
+  document.getElementById('mapRain').textContent = now.precipitation.toFixed(1) + ' mm/h';
+  document.getElementById('mapWind').textContent = Math.round(now.wind_speed_10m) + ' km/h';
+  document.getElementById('mapVisibility').textContent = (now.visibility / 1000).toFixed(1) + ' km';
+}
 function formatClock(value) { return new Date(value).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); }
 function showLoading(show) { loadingSpinner.classList.toggle('hidden', !show); }
 function showDashboard() { weatherDashboard.classList.remove('hidden'); emptyState.classList.add('hidden'); }
@@ -129,18 +141,54 @@ function createParticles() {
   for (let i = 0; i < 24; i++) { const el = document.createElement('span'); el.className = 'gust'; el.style.top = Math.random() * 100 + '%'; el.style.width = 80 + Math.random() * 160 + 'px'; el.style.animationDuration = 1.4 + Math.random() * 2.2 + 's'; wind.appendChild(el); }
 }
 
-let audioContext, ambienceNode, ambienceGain;
-document.getElementById('soundToggle').addEventListener('click', function () {
-  const button = document.getElementById('soundToggle');
-  if (ambienceGain) { ambienceGain.disconnect(); ambienceGain = null; ambienceNode.stop(); ambienceNode = null; button.textContent = '🔇 Ambient sound off'; button.setAttribute('aria-pressed', 'false'); return; }
+let audioContext, ambienceNode, ambienceGain, birdTimer, thunderTimer;
+let activeSoundScene = 'idle';
+
+function stopAmbientSound() {
+  if (birdTimer) clearInterval(birdTimer);
+  if (thunderTimer) clearInterval(thunderTimer);
+  birdTimer = null; thunderTimer = null;
+  if (ambienceNode) ambienceNode.stop();
+  if (ambienceGain) ambienceGain.disconnect();
+  ambienceNode = null; ambienceGain = null;
+}
+function chirp() {
+  if (!audioContext || !ambienceGain) return;
+  const oscillator = audioContext.createOscillator(), gain = audioContext.createGain();
+  oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(1500 + Math.random() * 600, audioContext.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(2600 + Math.random() * 700, audioContext.currentTime + .12);
+  gain.gain.setValueAtTime(.035, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + .2);
+  oscillator.connect(gain).connect(ambienceGain); oscillator.start(); oscillator.stop(audioContext.currentTime + .22);
+}
+function thunderRumble() {
+  if (!audioContext || !ambienceGain) return;
+  const oscillator = audioContext.createOscillator(), gain = audioContext.createGain();
+  oscillator.type = 'sawtooth'; oscillator.frequency.setValueAtTime(65, audioContext.currentTime);
+  gain.gain.setValueAtTime(.05, audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + 1.8);
+  oscillator.connect(gain).connect(ambienceGain); oscillator.start(); oscillator.stop(audioContext.currentTime + 1.9);
+}
+function startAmbientSound() {
   audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+  ambienceGain = audioContext.createGain(); ambienceGain.gain.value = .7; ambienceGain.connect(audioContext.destination);
+  if (activeSoundScene === 'sun') { chirp(); birdTimer = setInterval(chirp, 1800); return; }
   const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 2, audioContext.sampleRate), channel = buffer.getChannelData(0);
   for (let i = 0; i < channel.length; i++) channel[i] = Math.random() * 2 - 1;
   ambienceNode = audioContext.createBufferSource(); ambienceNode.buffer = buffer; ambienceNode.loop = true;
-  const filter = audioContext.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 850;
-  ambienceGain = audioContext.createGain(); ambienceGain.gain.value = .045;
-  ambienceNode.connect(filter).connect(ambienceGain).connect(audioContext.destination); ambienceNode.start();
-  button.textContent = '🔊 Ambient sound on'; button.setAttribute('aria-pressed', 'true');
+  const filter = audioContext.createBiquadFilter(), gain = audioContext.createGain();
+  filter.type = activeSoundScene === 'wind' ? 'lowpass' : 'bandpass';
+  filter.frequency.value = activeSoundScene === 'wind' ? 420 : activeSoundScene === 'thunder' ? 280 : 1450;
+  gain.gain.value = activeSoundScene === 'thunder' ? .035 : .055;
+  ambienceNode.connect(filter).connect(gain).connect(ambienceGain); ambienceNode.start();
+  if (activeSoundScene === 'thunder') { thunderRumble(); thunderTimer = setInterval(thunderRumble, 7000); }
+}
+function refreshAmbientSound() {
+  if (!ambienceGain) return;
+  stopAmbientSound(); startAmbientSound();
+}
+document.getElementById('soundToggle').addEventListener('click', function () {
+  const button = document.getElementById('soundToggle');
+  if (ambienceGain) { stopAmbientSound(); button.textContent = '🔇 Ambient sound off'; button.setAttribute('aria-pressed', 'false'); return; }
+  startAmbientSound(); button.textContent = '🔊 ' + (activeSoundScene === 'sun' ? 'Birds on' : activeSoundScene === 'rain' || activeSoundScene === 'drizzle' ? 'Rain sound on' : activeSoundScene === 'wind' ? 'Wind sound on' : activeSoundScene === 'thunder' ? 'Thunder sound on' : 'Ambient sound on'); button.setAttribute('aria-pressed', 'true');
 });
 
 createParticles();
