@@ -1,4 +1,4 @@
-console.info('Weather Dashboard build: open-meteo-2');
+console.info('Weather Dashboard build: open-meteo-3');
 
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
@@ -50,7 +50,9 @@ function useLocation() {
       const response = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + latitude + '&lon=' + longitude + '&zoom=10&addressdetails=1');
       const result = await response.json();
       const address = result.address || {};
-      const city = address.city || address.town || address.village || address.county || result.display_name || 'Your location';
+      const rawCity = address.city || address.town || address.village || address.municipality || address.county || result.display_name || 'Your location';
+      // GPS services often return administrative names such as "Faisalabad City Tehsil".
+      const city = rawCity.replace(/\\s+(City\\s+)?Tehsil$/i, '').replace(/\\s+District$/i, '');
       const country = address.country_code ? address.country_code.toUpperCase() : '';
       await loadWeather(latitude, longitude, city, country);
     } catch (error) { await loadWeather(position.coords.latitude, position.coords.longitude, 'Your location', ''); }
