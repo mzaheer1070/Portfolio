@@ -752,3 +752,12 @@ body[data-scene="wind"] .weather-icon, body.windy .weather-icon { animation: win
 @keyframes rainIcon { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-9px) rotate(-3deg); } }
 @keyframes windIcon { 0%,100% { transform:translateX(0); } 50% { transform:translateX(10px) rotate(4deg); } }
 @media (max-width: 768px) { #weatherMap { height: 300px; } .map-section { padding: 20px; } }
+
+/* Live conditions above the map */
+.lightning { animation-play-state: paused; }
+body[data-scene="thunder"] .lightning { animation-play-state: running; }
+.map-insights { display:grid; grid-template-columns:repeat(4, minmax(130px, 1fr)); gap:10px; margin:0 0 18px; }
+.map-insights div { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:13px; color:#fff; }
+.map-insights span { display:block; font-size:.8rem; opacity:.78; margin-bottom:5px; }
+.map-insights strong { font-size:1.05rem; }
+@media (max-width:700px) { .map-insights { grid-template-columns:repeat(2, 1fr); } }
