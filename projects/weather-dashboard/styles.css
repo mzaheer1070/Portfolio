@@ -761,3 +761,18 @@ body[data-scene="thunder"] .lightning { animation-play-state: running; }
 .map-insights span { display:block; font-size:.8rem; opacity:.78; margin-bottom:5px; }
 .map-insights strong { font-size:1.05rem; }
 @media (max-width:700px) { .map-insights { grid-template-columns:repeat(2, 1fr); } }
+
+/* Theme + elevated visual finish */
+.header-controls { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+.theme-toggle { border:1px solid rgba(255,255,255,.45); background:rgba(10,20,42,.28); color:#fff; border-radius:999px; padding:10px 16px; margin-top:14px; cursor:pointer; font-weight:700; backdrop-filter:blur(12px); transition:transform .25s ease, background .25s ease; }
+.theme-toggle:hover { background:rgba(255,255,255,.25); transform:translateY(-2px); }
+body[data-theme="light"] { color:#172033; }
+body[data-theme="light"] .vignette { background:radial-gradient(ellipse at center, transparent 40%, rgba(26,52,88,.16) 100%); }
+body[data-theme="light"] .header, body[data-theme="light"] .footer { color:#172033; text-shadow:none; }
+body[data-theme="light"] .subtitle, body[data-theme="light"] .footer { opacity:.8; }
+body[data-theme="light"] .current-weather, body[data-theme="light"] .forecast-section, body[data-theme="light"] .map-section { background:rgba(255,255,255,.68); border-color:rgba(255,255,255,.8); box-shadow:0 18px 50px rgba(18,50,82,.16); }
+body[data-theme="light"] .city-name, body[data-theme="light"] .weather-description, body[data-theme="light"] .temperature, body[data-theme="light"] .forecast-title, body[data-theme="light"] .forecast-card, body[data-theme="light"] .map-heading, body[data-theme="light"] .map-insights div { color:#172033; }
+body[data-theme="light"] .current-date, body[data-theme="light"] .feels-like, body[data-theme="light"] .stat-label, body[data-theme="light"] .map-heading p { color:rgba(23,32,51,.7); }
+body[data-theme="light"] .stat-card, body[data-theme="light"] .forecast-card, body[data-theme="light"] .map-insights div { background:rgba(255,255,255,.64); border-color:rgba(45,86,130,.14); }
+body[data-theme="light"] .stat-value { color:#172033; }
+body[data-theme="light"] .sound-toggle, body[data-theme="light"] .theme-toggle { background:rgba(255,255,255,.65); color:#172033; border-color:rgba(23,32,51,.16); }
