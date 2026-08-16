@@ -723,3 +723,32 @@ body[data-scene="thunder"] .cloud::after {
         grid-template-columns: 1fr;
     }
 }
+
+/* Immersive controls + map */
+.sound-toggle, .map-layer-btn {
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(10, 20, 42, 0.28);
+    color: #fff;
+    border-radius: 999px;
+    padding: 10px 16px;
+    margin-top: 14px;
+    cursor: pointer;
+    font-weight: 700;
+    backdrop-filter: blur(12px);
+    transition: transform .25s ease, background .25s ease;
+}
+.sound-toggle:hover, .map-layer-btn:hover, .map-layer-btn.active { background: rgba(255,255,255,.25); transform: translateY(-2px); }
+.map-section { background: rgba(255,255,255,.14); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.28); border-radius: 20px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,.18); }
+.map-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; color: #fff; margin-bottom: 20px; }
+.map-heading p { color: rgba(255,255,255,.78); margin-top: 6px; }
+.map-layer-controls { display:flex; flex-wrap:wrap; gap:8px; }
+.map-layer-btn { margin:0; padding:8px 13px; font-size:.85rem; }
+#weatherMap { height: 420px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.3); }
+.leaflet-control-attribution { font-size: 10px !important; }
+body[data-scene="thunder"] .weather-icon { animation: thunderIcon 1.9s ease-in-out infinite; }
+body[data-scene="rain"] .weather-icon, body[data-scene="drizzle"] .weather-icon { animation: rainIcon 1.5s ease-in-out infinite; }
+body[data-scene="wind"] .weather-icon, body.windy .weather-icon { animation: windIcon 1.2s ease-in-out infinite; }
+@keyframes thunderIcon { 0%,84%,100% { transform: translateY(0) rotate(0); filter: none; } 88% { transform: translateY(-12px) rotate(-5deg); filter: drop-shadow(0 0 22px #fff); } 92% { transform: translateY(4px) rotate(5deg); } }
+@keyframes rainIcon { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-9px) rotate(-3deg); } }
+@keyframes windIcon { 0%,100% { transform:translateX(0); } 50% { transform:translateX(10px) rotate(4deg); } }
+@media (max-width: 768px) { #weatherMap { height: 300px; } .map-section { padding: 20px; } }

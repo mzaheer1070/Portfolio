@@ -95,10 +95,14 @@ async function fetchWeather(city) {
 
         const forecastData = await forecastResponse.json();
 
+        // Request extended forecast when the account supports One Call 3.0.
+        const extendedForecast = await fetchExtendedForecast(lat, lon);
+
         // Display data
         displayWeather(weatherData, name, country);
-        displayForecast(forecastData);
+        displayForecast(extendedForecast || forecastData);
         applyWeatherAtmosphere(weatherData);
+        updateMap(lat, lon);
 
         showLoading(false);
         showDashboard();
@@ -215,9 +219,11 @@ async function reverseGeocodeAndFetchWeather(lat, lon) {
 
         // Display data
         console.log(`📍 Displaying weather for: ${cityName}, ${countryCode}`);
+        const extendedForecast = await fetchExtendedForecast(lat, lon);
         displayWeather(weatherData, cityName, countryCode);
-        displayForecast(forecastData);
+        displayForecast(extendedForecast || forecastData);
         applyWeatherAtmosphere(weatherData);
+        updateMap(lat, lon);
 
         showLoading(false);
         showDashboard();
@@ -254,46 +260,31 @@ function displayWeather(data, city, country) {
     document.getElementById('visibility').textContent = `${(visibility / 1000).toFixed(1)} km`;
     document.getElementById('sunrise').textContent = formatTime(sys.sunrise);
     document.getElementById('sunset').textContent = formatTime(sys.sunset);
+    document.getElementById('cloudCover').textContent = `${clouds?.all ?? 0}%`;
+    const rainMm = data.rain?.['1h'] ?? data.snow?.['1h'] ?? 0;
+    document.getElementById('precipitation').textContent = `${rainMm.toFixed(1)} mm/h`;
 }
 
-// Display 5-Day Forecast
+// Display daily forecast (up to 8 days with One Call; otherwise 5-day fallback)
 function displayForecast(data) {
-    const forecasts = {};
-
-    // Group forecasts by day
-    data.list.forEach(item => {
-        const date = new Date(item.dt * 1000).toLocaleDateString();
-        if (!forecasts[date]) {
-            forecasts[date] = [];
-        }
-        forecasts[date].push(item);
-    });
-
-    // Get unique days (every 24 hours)
-    const days = Object.keys(forecasts).slice(0, 5);
-
     forecastContainer.innerHTML = '';
-
-    days.forEach(date => {
-        const dayForecasts = forecasts[date];
-        const middleIndex = Math.floor(dayForecasts.length / 2);
-        const forecast = dayForecasts[middleIndex];
-
-        const main = forecast.main;
-        const weather = forecast.weather[0];
-        const icon = weatherIcons[weather.main] || '🌤️';
-
+    if (data.daily) {
+        data.daily.slice(0, 8).forEach(day => {
+            const weather = day.weather[0];
+            const card = document.createElement('div');
+            card.className = 'forecast-card';
+            card.innerHTML = `<div class="forecast-date">${new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div><div class="forecast-icon">${weatherIcons[weather.main] || '🌤️'}</div><div class="forecast-temp">${Math.round(day.temp.day)}°C</div><div class="forecast-temp-range">${Math.round(day.temp.max)}° / ${Math.round(day.temp.min)}° · 💧 ${Math.round((day.pop || 0) * 100)}%</div>`;
+            forecastContainer.appendChild(card);
+        });
+        return;
+    }
+    const forecasts = {};
+    data.list.forEach(item => { const date = new Date(item.dt * 1000).toLocaleDateString(); (forecasts[date] ||= []).push(item); });
+    Object.keys(forecasts).slice(0, 5).forEach(date => {
+        const items = forecasts[date], forecast = items[Math.floor(items.length / 2)], weather = forecast.weather[0];
         const card = document.createElement('div');
         card.className = 'forecast-card';
-        card.innerHTML = `
-            <div class="forecast-date">${new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
-            <div class="forecast-icon">${icon}</div>
-            <div class="forecast-temp">${Math.round(main.temp)}°C</div>
-            <div class="forecast-temp-range">
-                ${Math.round(main.temp_max)}° / ${Math.round(main.temp_min)}°
-            </div>
-        `;
-
+        card.innerHTML = `<div class="forecast-date">${new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div><div class="forecast-icon">${weatherIcons[weather.main] || '🌤️'}</div><div class="forecast-temp">${Math.round(forecast.main.temp)}°C</div><div class="forecast-temp-range">${Math.round(forecast.main.temp_max)}° / ${Math.round(forecast.main.temp_min)}°</div>`;
         forecastContainer.appendChild(card);
     });
 }
@@ -446,3 +437,47 @@ function clearError() {
 // Initialize
 createParticles();
 showEmpty();
+
+// One Call is optional: the free 5-day forecast remains available if the account has not enabled it.
+async function fetchExtendedForecast(lat, lon) {
+    try {
+        const response = await fetch(`${BASE_URL}/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&appid=${API_KEY}&units=metric`);
+        return response.ok ? await response.json() : null;
+    } catch { return null; }
+}
+
+let weatherMap, weatherLayer, activeMapLayer = 'precipitation_new';
+function updateMap(lat, lon) {
+    if (!window.L) return;
+    if (!weatherMap) {
+        weatherMap = L.map('weatherMap', { zoomControl: true }).setView([lat, lon], 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(weatherMap);
+        document.querySelectorAll('.map-layer-btn').forEach(button => button.addEventListener('click', () => {
+            activeMapLayer = button.dataset.layer;
+            document.querySelectorAll('.map-layer-btn').forEach(item => item.classList.toggle('active', item === button));
+            addWeatherLayer();
+        }));
+    } else { weatherMap.setView([lat, lon], 8); }
+    addWeatherLayer();
+    setTimeout(() => weatherMap.invalidateSize(), 150);
+}
+function addWeatherLayer() {
+    if (weatherLayer) weatherMap.removeLayer(weatherLayer);
+    weatherLayer = L.tileLayer(`https://tile.openweathermap.org/map/${activeMapLayer}/{z}/{x}/{y}.png?appid=${API_KEY}`, { opacity: .66, maxZoom: 18 });
+    weatherLayer.addTo(weatherMap);
+}
+
+// Synthesised ambience avoids large media files. It starts only after a deliberate click.
+let audioContext, ambienceNode, ambienceGain;
+document.getElementById('soundToggle').addEventListener('click', () => {
+    const button = document.getElementById('soundToggle');
+    if (ambienceGain) { ambienceGain.disconnect(); ambienceGain = null; ambienceNode?.stop(); ambienceNode = null; button.textContent = '🔇 Ambient sound off'; button.setAttribute('aria-pressed', 'false'); return; }
+    audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+    const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 2, audioContext.sampleRate);
+    const channel = buffer.getChannelData(0); for (let i = 0; i < channel.length; i += 1) channel[i] = Math.random() * 2 - 1;
+    ambienceNode = audioContext.createBufferSource(); ambienceNode.buffer = buffer; ambienceNode.loop = true;
+    const filter = audioContext.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 850;
+    ambienceGain = audioContext.createGain(); ambienceGain.gain.value = .045;
+    ambienceNode.connect(filter).connect(ambienceGain).connect(audioContext.destination); ambienceNode.start();
+    button.textContent = '🔊 Ambient sound on'; button.setAttribute('aria-pressed', 'true');
+});
