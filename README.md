@@ -96,6 +96,7 @@ Portfolio/
 
 | Version    | Release Notes                                                                |
 | ---------- | ---------------------------------------------------------------------------- |
+| **v3.1.0** | Add live weather-scene animations to the dashboard |
 | **v3.0.0** | Major UI redesign, HSL dark/light design system, Google typography, privacy updates, and MEss profile |
 | **v2.1.3** | Fix: Use OpenWeatherMap reverse geocoding for accurate city detection               |
 | **v2.1.2** | Update projects page - reorder projects and open Weather Dashboard in new tab       |
