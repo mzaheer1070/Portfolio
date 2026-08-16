@@ -1,3 +1,4 @@
+console.info('Weather Dashboard build: forecast-fix2');
 // Weather API Configuration
 const API_KEY = '6fe4a62464026753c081e103b5dfaf96';
 const BASE_URL = 'https://api.openweathermap.org';
