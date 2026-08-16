@@ -278,13 +278,28 @@ function displayForecast(data) {
         });
         return;
     }
+    const timezone = data.city?.timezone || 0;
     const forecasts = {};
-    data.list.forEach(item => { const date = new Date(item.dt * 1000).toLocaleDateString(); (forecasts[date] ||= []).push(item); });
-    Object.keys(forecasts).slice(0, 5).forEach(date => {
-        const items = forecasts[date], forecast = items[Math.floor(items.length / 2)], weather = forecast.weather[0];
+    data.list.forEach(item => {
+        // A stable ISO key avoids parsing localized date strings such as 16/08/2026.
+        const dateKey = new Date((item.dt + timezone) * 1000).toISOString().slice(0, 10);
+        (forecasts[dateKey] ||= []).push(item);
+    });
+
+    Object.values(forecasts).slice(0, 5).forEach(items => {
+        const forecast = items[Math.floor(items.length / 2)];
+        const weather = forecast.weather[0];
+        const displayDate = new Date((forecast.dt + timezone) * 1000);
+        const low = Math.min(...items.map(item => item.main.temp_min));
+        const high = Math.max(...items.map(item => item.main.temp_max));
+        const chanceOfRain = Math.max(...items.map(item => item.pop || 0));
         const card = document.createElement('div');
         card.className = 'forecast-card';
-        card.innerHTML = `<div class="forecast-date">${new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div><div class="forecast-icon">${weatherIcons[weather.main] || '🌤️'}</div><div class="forecast-temp">${Math.round(forecast.main.temp)}°C</div><div class="forecast-temp-range">${Math.round(forecast.main.temp_max)}° / ${Math.round(forecast.main.temp_min)}°</div>`;
+        card.innerHTML =
+            '<div class="forecast-date">' + displayDate.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric' }) + '</div>' +
+            '<div class="forecast-icon">' + (weatherIcons[weather.main] || '🌤️') + '</div>' +
+            '<div class="forecast-temp">' + Math.round(forecast.main.temp) + '°C</div>' +
+            '<div class="forecast-temp-range">' + Math.round(high) + '° / ' + Math.round(low) + '° · 💧 ' + Math.round(chanceOfRain * 100) + '%</div>';
         forecastContainer.appendChild(card);
     });
 }
