@@ -6,11 +6,32 @@
     <meta name="theme-color" content="#101a35">
     <title>Weather Dashboard Pro</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/scenes.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body data-scene="idle" data-theme="dark">
+    <div id="cinematicSky" aria-hidden="true">
+        <div class="sky-gradient"></div>
+        <div class="sky-stars"></div>
+        <div class="sky-aurora"></div>
+        <div class="sky-sun"></div>
+        <div class="sky-moon"></div>
+        <div class="sky-cloud cloud-one"></div>
+        <div class="sky-cloud cloud-two"></div>
+        <div class="sky-cloud cloud-three"></div>
+        <div class="sky-horizon"></div>
+        <div class="sky-rays"></div>
+        <div class="sky-lens-flare"></div>
+    </div>
+
+    <div id="cinematicGrain" aria-hidden="true"></div>
+    <div id="cinematicVignette" aria-hidden="true"></div>
+
     <canvas id="weatherCanvas" aria-hidden="true"></canvas>
     <div id="windEffect" aria-hidden="true"></div>
     <div id="lightningFlash" aria-hidden="true"></div>
@@ -34,16 +55,20 @@
         <section class="search-section" aria-label="Weather search">
             <div class="search-box">
                 <label class="sr-only" for="searchInput">Search for a city</label>
-                <input id="searchInput" class="search-input" type="search"
-                    placeholder="Search city e.g. London, New York, Tokyo"
-                    autocomplete="off"
-                    aria-autocomplete="list"
-                    aria-controls="citySuggestions"
-                    aria-expanded="false">
-                <button id="searchBtn" class="search-btn" type="button">Search</button>
+                <div class="search-field">
+                    <span class="search-symbol" aria-hidden="true">⌕</span>
+                    <input id="searchInput" class="search-input" type="search"
+                        placeholder="Search city, country or region" autocomplete="off"
+                        aria-autocomplete="list" aria-controls="citySuggestions"
+                        aria-expanded="false">
+                    <button id="searchBtn" class="search-btn" type="button"
+                        aria-label="Search for city" title="Search">🔍</button>
+                </div>
+
                 <button id="locationBtn" class="location-btn" type="button"
                     title="Use my location" aria-label="Use my current location">📍</button>
             </div>
+
             <div id="citySuggestions" class="city-suggestions" role="listbox"></div>
             <div id="errorMessage" class="error-message" role="alert"></div>
         </section>
@@ -66,7 +91,6 @@
                         <div id="temperature" class="temperature">--°C</div>
                         <div id="weatherIcon" class="weather-icon">🌤️</div>
                     </div>
-
                     <div class="weather-details">
                         <p id="weatherDescription" class="weather-description"></p>
                         <div class="feels-like">
@@ -94,13 +118,11 @@
                 <div id="forecastContainer" class="forecast-container"></div>
             </section>
 
-            <section class="map-section glass-panel">
-                <div class="map-heading">
-                    <div>
-                        <p class="eyebrow">EXPLORE THE AREA</p>
-                        <h3 class="section-title">🗺️ Location Map</h3>
-                        <p>Your selected location, powered by OpenStreetMap.</p>
-                    </div>
+            <section id="mapSection" class="map-section glass-panel">
+                <div>
+                    <p class="eyebrow">EXPLORE THE AREA</p>
+                    <h3 class="section-title">🗺️ Location Map</h3>
+                    <p>Your selected location, powered by OpenStreetMap.</p>
                 </div>
 
                 <div class="map-insights">
@@ -121,14 +143,12 @@
     </main>
 
     <footer class="footer">
-        <p>Weather data by
-            <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>
-        </p>
+        <p>Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></p>
     </footer>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js"></script>
-    <script src="autocomplete.js"></script>
-    <script src="sound.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/weather-effects.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
