@@ -1,0 +1,311 @@
+body {
+    --scene-top: #101a35;
+    --scene-bottom: #172a52;
+    --scene-glow: rgba(110, 170, 255, .18);
+    background:
+        radial-gradient(circle at 50% 12%, var(--scene-glow), transparent 42%),
+        linear-gradient(135deg, var(--scene-top), var(--scene-bottom));
+    background-size: 140% 140%;
+    animation: atmosphericShift 18s ease-in-out infinite alternate;
+    transition: background 1.5s ease, --scene-top 1.5s ease, --scene-bottom 1.5s ease;
+}
+
+body[data-period="morning"] {
+    --scene-top: hsl(40 80% 85%);
+    --scene-bottom: hsl(200 60% 70%);
+    --scene-glow: rgba(255, 205, 110, .35);
+}
+
+body[data-period="noon"] {
+    --scene-top: hsl(210 60% 80%);
+    --scene-bottom: hsl(190 70% 75%);
+    --scene-glow: rgba(255, 235, 160, .3);
+}
+
+body[data-period="sunset"] {
+    --scene-top: hsl(30 90% 60%);
+    --scene-bottom: hsl(340 70% 50%);
+    --scene-glow: rgba(255, 145, 80, .38);
+}
+
+body[data-period="night"] {
+    --scene-top: hsl(220 30% 15%);
+    --scene-bottom: hsl(240 20% 10%);
+    --scene-glow: rgba(110, 130, 255, .2);
+}
+
+body[data-scene="sun"] {
+    --scene-glow: rgba(255, 205, 80, .42);
+}
+
+body[data-scene="clouds"],
+body[data-scene="fog"] {
+    --scene-glow: rgba(170, 205, 230, .2);
+}
+
+body[data-scene="rain"],
+body[data-scene="drizzle"] {
+    --scene-glow: rgba(70, 180, 255, .28);
+}
+
+body[data-scene="snow"] {
+    --scene-glow: rgba(210, 240, 255, .38);
+}
+
+body[data-scene="thunder"] {
+    --scene-glow: rgba(220, 235, 255, .3);
+}
+
+@keyframes atmosphericShift {
+    from {
+        background-position: 0% 35%;
+    }
+
+    to {
+        background-position: 100% 65%;
+    }
+}
+
+#weatherCanvas,
+#windEffect {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+#weatherCanvas {
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: .9;
+}
+
+#windEffect {
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .8s ease;
+}
+
+#windEffect.active {
+    opacity: 1;
+}
+
+.wind-line {
+    position: absolute;
+    width: 150px;
+    height: 2px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, transparent, rgba(220, 240, 255, .65), transparent);
+    animation: windMove linear infinite;
+}
+
+@keyframes windMove {
+    from { transform: translateX(-220px) rotate(-8deg); }
+    to { transform: translateX(calc(100vw + 220px)) rotate(-8deg); }
+}
+
+#cinematicSky,
+#cinematicGrain,
+#cinematicVignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+#cinematicSky {
+    z-index: -1;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .08), transparent 65%);
+}
+
+#cinematicGrain {
+    z-index: 6;
+    opacity: .035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#cinematicVignette {
+    z-index: 4;
+    background: radial-gradient(circle, transparent 45%, rgba(0, 0, 0, .38));
+}
+
+.sky-gradient,
+.sky-stars,
+.sky-aurora,
+.sky-horizon,
+.sky-rays,
+.sky-lens-flare {
+    position: absolute;
+    inset: 0;
+}
+
+.sky-gradient {
+    opacity: .85;
+    background:
+        radial-gradient(circle at 50% 18%, rgba(255, 210, 110, .32), transparent 25%),
+        linear-gradient(180deg, rgba(20, 35, 75, .25), transparent 75%);
+    transition: opacity 1s ease, filter 1s ease;
+}
+
+.sky-stars {
+    opacity: 0;
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, .8) 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255, 255, 255, .55) 1px, transparent 1.5px);
+    background-size: 90px 90px, 140px 140px;
+    transition: opacity 1s ease;
+}
+
+.sky-sun,
+.sky-moon {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    width: clamp(90px, 13vw, 180px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 1s ease, filter 1s ease;
+}
+
+.sky-sun {
+    background: radial-gradient(circle at 35% 35%, #fffbd0, #ffd15c 55%, #f59e0b);
+    box-shadow: 0 0 45px 16px rgba(255, 205, 80, .35);
+    animation: sunPulse 7s ease-in-out infinite alternate;
+}
+
+.sky-moon {
+    background: radial-gradient(circle at 35% 35%, #fff, #d8e5ff 65%, #9db1dd);
+    box-shadow: 0 0 35px 10px rgba(190, 215, 255, .25);
+}
+
+body[data-daytime="day"][data-celestial="full"] .sky-sun,
+body[data-daytime="day"][data-celestial="partial"] .sky-sun,
+body[data-daytime="night"][data-celestial="full"] .sky-moon,
+body[data-daytime="night"][data-celestial="partial"] .sky-moon {
+    opacity: 1;
+}
+
+body[data-daytime="night"] .sky-stars {
+    opacity: .8;
+}
+
+.sky-cloud {
+    position: absolute;
+    z-index: 2;
+    width: 260px;
+    height: 70px;
+    border-radius: 999px;
+    opacity: 0;
+    background: rgba(220, 235, 255, .35);
+    filter: blur(2px);
+    animation: cloudDrift 55s linear infinite;
+    transition: opacity 1s ease;
+}
+
+.sky-cloud::before,
+.sky-cloud::after {
+    position: absolute;
+    content: "";
+    border-radius: 50%;
+    background: inherit;
+}
+
+.sky-cloud::before {
+    width: 110px;
+    height: 110px;
+    left: 45px;
+    bottom: 18px;
+}
+
+.sky-cloud::after {
+    width: 90px;
+    height: 90px;
+    right: 45px;
+    bottom: 12px;
+}
+
+.cloud-one {
+    top: 15%;
+    left: 12%;
+    opacity: .6;
+    animation-duration: 95s;
+}
+
+.cloud-two {
+    top: 25%;
+    right: 8%;
+    opacity: .75;
+    animation-duration: 70s;
+}
+
+.cloud-three {
+    top: 42%;
+    left: 35%;
+    opacity: .9;
+    animation-duration: 42s;
+}
+
+body[data-celestial="partial"] .sky-cloud,
+body[data-scene="clouds"] .sky-cloud,
+body[data-scene="fog"] .sky-cloud,
+body[data-scene="rain"] .sky-cloud,
+body[data-scene="drizzle"] .sky-cloud,
+body[data-scene="snow"] .sky-cloud,
+body[data-scene="thunder"] .sky-cloud {
+    opacity: .85;
+}
+
+.sky-horizon {
+    top: auto;
+    height: 35%;
+    background: linear-gradient(transparent, rgba(5, 12, 30, .35));
+}
+
+.sky-rays {
+    opacity: 0;
+    background: repeating-conic-gradient(
+        from 250deg at 50% 15%,
+        rgba(255, 226, 145, .1) 0deg 7deg,
+        transparent 7deg 18deg
+    );
+    transition: opacity 1s ease;
+}
+
+body[data-daytime="day"][data-celestial="full"] .sky-rays {
+    opacity: .8;
+}
+
+body[data-scene="rain"] .sky-gradient,
+body[data-scene="thunder"] .sky-gradient,
+body[data-scene="snow"] .sky-gradient {
+    filter: brightness(.65);
+}
+
+body[data-scene="sun"] .sky-gradient {
+    filter: saturate(1.2) brightness(1.08);
+}
+
+@keyframes cloudDrift {
+    from { transform: translateX(-30vw); }
+    to { transform: translateX(30vw); }
+}
+
+@keyframes sunPulse {
+    from { filter: brightness(.95); }
+    to { filter: brightness(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none;
+    }
+
+    .wind-line,
+    .sky-cloud,
+    .sky-sun {
+        animation: none;
+    }
+}
