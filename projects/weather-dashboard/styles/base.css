@@ -1,0 +1,170 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --text: #f8fbff;
+    --muted: rgba(239, 246, 255, .7);
+    --glass: rgba(12, 23, 52, .42);
+    --border: rgba(255, 255, 255, .18);
+    --accent: #8ea7ff;
+    --shadow: 0 24px 80px rgba(0, 0, 0, .25);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 24px;
+    color: var(--text);
+    font-family: Inter, "Segoe UI", sans-serif;
+    background: #101a35;
+}
+
+body::before {
+    position: fixed;
+    z-index: -2;
+    inset: 0;
+    content: "";
+    opacity: .28;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(113, 141, 255, .35), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(34, 211, 238, .2), transparent 30%);
+    pointer-events: none;
+}
+
+button,
+.search-input {
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.08);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .2);
+}
+
+button:active {
+    transform: translateY(1px) scale(.96);
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, .9);
+    outline-offset: 3px;
+}
+
+.search-field:focus-within {
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, .72),
+        0 8px 28px rgba(0, 0, 0, .18);
+}
+
+.search-input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.search-input::selection {
+    color: #172033;
+    background: rgba(174, 190, 255, .45);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* Light mode changes the interface surfaces and text only. */
+body[data-theme="light"] {
+    --text: #172033;
+    --muted: rgba(23, 32, 51, .72);
+    --glass: rgba(255, 255, 255, .68);
+    --border: rgba(255, 255, 255, .82);
+    --accent: #5268c7;
+    --shadow: 0 24px 80px rgba(24, 45, 90, .2);
+}
+
+body[data-theme="light"]::before {
+    opacity: .18;
+}
+
+body[data-theme="light"] .sound-toggle,
+body[data-theme="light"] .theme-toggle,
+body[data-theme="light"] .fullscreen-button {
+    color: var(--text);
+    border-color: rgba(65, 87, 160, .28);
+    background: rgba(255, 255, 255, .62);
+}
+
+body[data-theme="light"] .glass-panel,
+body[data-theme="light"] .feature-card,
+body[data-theme="light"] .stat-card,
+body[data-theme="light"] .forecast-card,
+body[data-theme="light"] .map-insights div {
+    border-color: rgba(65, 87, 160, .22);
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, .68), rgba(255, 255, 255, .34));
+    box-shadow:
+        inset 0 1px rgba(255, 255, 255, .75),
+        0 18px 45px rgba(24, 45, 90, .14);
+}
+
+body[data-theme="light"] .eyebrow,
+body[data-theme="light"] .feature-label {
+    color: #5268c7;
+    text-shadow: none;
+}
+
+body[data-theme="light"] .section-title,
+body[data-theme="light"] .city-name,
+body[data-theme="light"] .weather-description,
+body[data-theme="light"] .stat-value,
+body[data-theme="light"] .forecast-card,
+body[data-theme="light"] .hour-card {
+    color: var(--text);
+}
+
+body[data-theme="light"] .hour-card {
+    border-color: rgba(65, 87, 160, .22);
+    background: rgba(255, 255, 255, .48);
+}
+
+body[data-theme="light"] .footer {
+    color: var(--muted);
+}
