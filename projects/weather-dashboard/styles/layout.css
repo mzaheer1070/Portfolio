@@ -1,0 +1,140 @@
+.container {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 1200px);
+    margin: auto;
+}
+
+.header {
+    margin: 12px 0 34px;
+    text-align: center;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, .3);
+}
+
+.brand-mark {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 12px;
+    color: #ffe08a;
+    font-size: 1.8rem;
+    line-height: 42px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .1);
+    box-shadow: 0 0 35px rgba(255, 220, 100, .45);
+}
+
+.header h1 {
+    margin-bottom: 8px;
+    font-size: clamp(2.1rem, 5vw, 4rem);
+    letter-spacing: -.06em;
+}
+
+.header h1 span {
+    color: #a9baff;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 1.1rem;
+}
+
+.header-controls,
+.search-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.header-controls {
+    margin-top: 20px;
+}
+
+.search-section {
+    position: relative;
+    z-index: 10;
+    margin-bottom: 32px;
+}
+
+.weather-dashboard {
+    display: grid;
+    gap: 28px;
+    min-width: 0;
+}
+
+.glass-panel {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    background: var(--glass);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(22px);
+}
+
+.current-weather,
+.forecast-section,
+.map-section {
+    min-width: 0;
+    padding: clamp(24px, 4vw, 42px);
+}
+
+.location-info {
+    margin-bottom: 28px;
+}
+
+.location-info,
+.weather-main,
+.weather-stats,
+.forecast-container,
+.map-insights {
+    min-width: 0;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    gap: 42px;
+    margin-bottom: 42px;
+    flex-wrap: wrap;
+}
+
+.temp-section {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    min-width: 0;
+}
+
+.temperature {
+    min-width: 0;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: -.08em;
+}
+
+.weather-details {
+    flex: 1 1 220px;
+    min-width: 0;
+}
+
+.weather-icon {
+    flex: 0 0 auto;
+    font-size: clamp(3.5rem, 10vw, 6.5rem);
+    animation: float 3.2s ease-in-out infinite;
+}
+
+.footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 40px;
+    padding: 20px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.footer a {
+    color: inherit;
+    font-weight: 700;
+}
