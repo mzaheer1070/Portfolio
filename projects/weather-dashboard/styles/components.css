@@ -593,6 +593,26 @@ body.cinematic-fullscreen .container {
     pointer-events: none;
 }
 
+/* Keep the exit control usable in fallback cinematic mode. */
+body.cinematic-fullscreen .header-controls {
+    position: fixed;
+    z-index: 120;
+    top: 20px;
+    right: 20px;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+body.cinematic-fullscreen .header-controls > *:not(.fullscreen-button) {
+    display: none;
+}
+
+body.cinematic-fullscreen .fullscreen-button {
+    display: inline-flex;
+    visibility: visible;
+    pointer-events: auto;
+}
+
 body.cinematic-fullscreen .current-weather {
     visibility: visible;
     padding: 0;
@@ -613,6 +633,36 @@ body.cinematic-fullscreen .current-weather .temperature {
     display: block;
 }
 
+body.cinematic-fullscreen .current-weather .weather-main {
+    text-align: center;
+}
+
+body.cinematic-fullscreen .current-weather .temp-section {
+    display: flex;
+    justify-content: center;
+}
+
+body.cinematic-fullscreen .current-weather .weather-details {
+    display: block;
+    margin-top: 8px;
+    text-align: center;
+}
+
+body.cinematic-fullscreen .current-weather .weather-description {
+    margin-bottom: 0;
+    color: rgba(239, 246, 255, .88);
+    font-size: clamp(1rem, 2.5vw, 1.45rem);
+    letter-spacing: .02em;
+}
+
+body.cinematic-fullscreen .current-weather .feels-like {
+    display: none;
+}
+
+body.cinematic-fullscreen .current-weather .weather-icon {
+    display: none;
+}
+
 body.cinematic-fullscreen .weather-main,
 body.cinematic-fullscreen .temp-section {
     margin: 0;
@@ -624,9 +674,23 @@ body.cinematic-fullscreen .temperature {
 }
 
 body.cinematic-fullscreen .current-weather .location-info {
-    display: block !important;
-    margin: 0 0 18px;
+    display: flex !important;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 0 26px;
     text-align: center;
+}
+
+body.cinematic-fullscreen .current-weather .local-time {
+    display: inline-flex;
+    margin-top: 14px;
+    padding: 10px 18px;
+    color: rgba(239, 246, 255, .9);
+    font-size: clamp(.9rem, 2vw, 1.15rem);
+    letter-spacing: .04em;
+    border-color: rgba(255, 255, 255, .28);
+    background: rgba(10, 20, 48, .32);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .18);
 }
 
 body.cinematic-fullscreen .current-weather .location-info .eyebrow {
