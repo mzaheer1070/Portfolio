@@ -24,11 +24,15 @@
             'sounds/sunny/birds-01.mp3',
             'sounds/sunny/birds-02.mp3'
         ],
-        clouds: ['sounds/wind/smooth-wind.mp3'],
-        fog: ['sounds/wind/smooth-wind.mp3'],
+        clouds: [],
+        fog: [],
         drizzle: [
-            'sounds/rain/rain-light.mp3',
-            'sounds/rain/drizzle.mp3'
+            'sounds/rain/drizzle.mp3',
+            'sounds/rain/rain-light.mp3'
+        ],
+        'light-shower': [
+            'sounds/rain/drizzle.mp3',
+            'sounds/rain/rain-shower.mp3'
         ],
         shower: [
             'sounds/rain/rain-shower.mp3',
@@ -38,28 +42,24 @@
             'sounds/rain/rain-medium.mp3',
             'sounds/rain/rain-steady.mp3'
         ],
-        thunderRain: [
-            'sounds/rain/rain-heavy.mp3',
-            'sounds/rain/thunder-rain.mp3'
-        ],
+        'heavy-rain': ['sounds/rain/rain-heavy.mp3'],
+        thunderRain: ['sounds/rain/rain-heavy.mp3'],
         snow: ['sounds/snow/soft-winter-wind.mp3'],
-        thunder: [
-            'sounds/thunder/thunder-01.mp3',
-            'sounds/thunder/thunder-02.mp3',
-            'sounds/thunder/thunder-03.mp3'
-        ]
+        thunder: ['sounds/thunder/thunder-01.mp3']
     };
 
     const volumes = {
-        idle: 0.025,
-        sun: 0.14,
-        clouds: 0.12,
-        fog: 0.09,
-        drizzle: 0.11,
-        shower: 0.15,
-        rain: 0.19,
-        thunder: 0.12,
-        snow: 0.12
+        idle: .018,
+        sun: .075,
+        clouds: .065,
+        fog: .05,
+        drizzle: .085,
+        'light-shower': .105,
+        shower: .14,
+        rain: .18,
+        'heavy-rain': .21,
+        thunder: .23,
+        snow: .065
     };
 
     function normaliseScene(scene, weatherCode) {
@@ -74,7 +74,7 @@
 
         audioContext = new AudioContextClass();
         masterGain = audioContext.createGain();
-        masterGain.gain.value = 0.8;
+        masterGain.gain.value = .62;
         masterGain.connect(audioContext.destination);
 
         createFallbackAmbient();
@@ -93,10 +93,10 @@
 
         for (let index = 0; index < data.length; index += 1) {
             previous =
-                previous * 0.96 +
-                (Math.random() * 2 - 1) * 0.04;
+                previous * .96 +
+                (Math.random() * 2 - 1) * .04;
 
-            data[index] = previous * 2.5;
+            data[index] = previous * 1.7;
         }
 
         ambientSource = audioContext.createBufferSource();
@@ -109,7 +109,7 @@
         ambientSource.loop = true;
 
         filter.type = 'lowpass';
-        filter.frequency.value = 1600;
+        filter.frequency.value = 1500;
 
         ambientSource
             .connect(filter)
@@ -123,22 +123,24 @@
         if (!ambientGain || !audioContext) return;
 
         const sceneVolume = {
-            idle: 0.01,
-            sun: 0.008,
-            clouds: 0.035,
-            fog: 0.025,
-            drizzle: 0.032,
-            shower: 0.055,
-            rain: 0.075,
-            thunder: 0.065,
-            snow: 0.02
+            idle: .006,
+            sun: .005,
+            clouds: .018,
+            fog: .012,
+            drizzle: .022,
+            'light-shower': .029,
+            shower: .04,
+            rain: .052,
+            'heavy-rain': .065,
+            thunder: .075,
+            snow: .014
         };
 
         ambientGain.gain.cancelScheduledValues(audioContext.currentTime);
         ambientGain.gain.setTargetAtTime(
-            sceneVolume[scene] || 0.02,
+            sceneVolume[scene] || .012,
             audioContext.currentTime,
-            1
+            .8
         );
     }
 
@@ -150,7 +152,6 @@
         audio.volume = 0;
 
         audio.addEventListener('error', () => {
-            console.warn(`Audio file unavailable: ${src}`);
             setFallbackVolume(currentScene);
         });
 
@@ -158,6 +159,8 @@
     }
 
     function getAudio(src, loop = false) {
+        if (!src) return null;
+
         if (!sounds.has(src)) {
             sounds.set(src, createAudio(src, loop));
         }
@@ -173,13 +176,12 @@
         if (!audio || !playing) return;
 
         audio.volume = volume;
-
         return audio.play().catch(() => {
             setFallbackVolume(currentScene);
         });
     }
 
-    function fadeAudio(audio, target, duration = 900) {
+    function fadeAudio(audio, target, duration = 1400) {
         if (!audio) return;
 
         const start = audio.volume;
@@ -191,10 +193,7 @@
         }
 
         function update(now) {
-            const progress = Math.min(
-                (now - started) / duration,
-                1
-            );
+            const progress = Math.min((now - started) / duration, 1);
 
             audio.volume = Math.max(
                 0,
@@ -219,7 +218,7 @@
             ambientGain.gain.setTargetAtTime(
                 0,
                 audioContext.currentTime,
-                0.4
+                .35
             );
         }
     }
@@ -230,8 +229,12 @@
     }
 
     function backgroundSoundFor(scene) {
-        if (scene === 'thunder') return randomItem(files.thunderRain);
-        return randomItem(files[scene] || files.clouds);
+        if (scene === 'thunder') {
+            return randomItem(files.thunderRain);
+        }
+
+        const sceneFiles = files[scene] || files.clouds;
+        return sceneFiles.length ? randomItem(sceneFiles) : null;
     }
 
     function playBackground(scene) {
@@ -242,8 +245,11 @@
             true
         );
 
-        playAudio(background, 0);
-        fadeAudio(background, volumes[scene] || volumes.clouds, 1200);
+        if (background) {
+            playAudio(background, 0);
+            fadeAudio(background, volumes[scene] || volumes.clouds, 1500);
+        }
+
         setFallbackVolume(scene);
 
         if (scene === 'sun') startBirds();
@@ -254,7 +260,7 @@
 
         const bird = getAudio(randomItem(files.birds));
         bird.currentTime = 0;
-        playAudio(bird, 0.12);
+        playAudio(bird, .06);
     }
 
     function startBirds() {
@@ -268,7 +274,7 @@
     function playFallbackThunder() {
         if (!audioContext || !masterGain || !playing) return;
 
-        const duration = 2.4;
+        const duration = 3.2;
         const buffer = audioContext.createBuffer(
             1,
             Math.floor(audioContext.sampleRate * duration),
@@ -280,13 +286,13 @@
 
         for (let index = 0; index < data.length; index += 1) {
             const progress = index / data.length;
-            const decay = Math.pow(1 - progress, 1.8);
+            const decay = Math.pow(1 - progress, 1.35);
 
             previous =
-                previous * 0.985 +
-                (Math.random() * 2 - 1) * 0.08;
+                previous * .985 +
+                (Math.random() * 2 - 1) * .1;
 
-            data[index] = previous * decay * 1.4;
+            data[index] = previous * decay * 1.35;
         }
 
         const source = audioContext.createBufferSource();
@@ -295,12 +301,12 @@
 
         source.buffer = buffer;
         filter.type = 'lowpass';
-        filter.frequency.value = 420;
+        filter.frequency.value = 480;
 
         gain.gain.setValueAtTime(.001, audioContext.currentTime);
         gain.gain.exponentialRampToValueAtTime(
-            .11,
-            audioContext.currentTime + .12
+            .16,
+            audioContext.currentTime + .14
         );
         gain.gain.exponentialRampToValueAtTime(
             .001,
@@ -319,14 +325,18 @@
         thunderCooldown = true;
 
         const thunder = getAudio(randomItem(files.thunder));
-        thunder.currentTime = 0;
-        thunder.volume = 0.1;
 
-        thunder.play().catch(playFallbackThunder);
+        if (thunder) {
+            thunder.currentTime = 0;
+            thunder.volume = .13;
+            thunder.play().catch(playFallbackThunder);
+        } else {
+            playFallbackThunder();
+        }
 
         setTimeout(() => {
             thunderCooldown = false;
-        }, 6500);
+        }, 4300);
     }
 
     function updateScene(scene, weatherCode) {
