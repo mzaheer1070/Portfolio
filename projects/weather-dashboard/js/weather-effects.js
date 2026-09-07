@@ -20,15 +20,26 @@
     let animationPaused = false;
     let lightningBolt;
 
+    const rainScenes = [
+        'drizzle',
+        'light-shower',
+        'shower',
+        'rain',
+        'heavy-rain',
+        'thunder'
+    ];
+
     const settings = {
         idle: [18, .2],
         sun: [35, .25],
         clouds: [30, .2],
         fog: [24, .12],
-        drizzle: [55, 1.2],
-        shower: [105, 2.8],
-        rain: [145, 2.2],
-        thunder: [220, 4],
+        drizzle: [85, 1.2],
+        'light-shower': [125, 1.8],
+        shower: [170, 2.8],
+        rain: [220, 3.2],
+        'heavy-rain': [270, 3.7],
+        thunder: [360, 4.8],
         snow: [100, .8]
     };
 
@@ -37,7 +48,7 @@
         (window.devicePixelRatio || 1) >= 2.5 ||
         matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const performanceScale = lowEndDevice ? .5 : 1;
+    const performanceScale = lowEndDevice ? .65 : 1;
 
     function normaliseScene(nextScene, weatherCode) {
         const code = Number(weatherCode);
@@ -46,122 +57,11 @@
         return nextScene || 'idle';
     }
 
-    function addSceneStyles() {
-        if (document.getElementById('weatherEffectsSceneStyles')) return;
-
-        const style = document.createElement('style');
-        style.id = 'weatherEffectsSceneStyles';
-        style.textContent = `
-            body[data-scene="shower"] {
-                --scene-glow: rgba(80, 175, 255, .3);
-            }
-
-            body[data-scene="shower"] .sky-cloud {
-                filter: blur(2px) brightness(.82) saturate(.85);
-            }
-
-            body[data-scene="sun"] .sky-sun {
-                top: 10%;
-                left: 84%;
-                transform: translateX(-50%);
-            }
-
-            body[data-scene="sun"] .sky-rays {
-                opacity: .58;
-                filter: blur(7px);
-                transform: scale(1.12);
-                transform-origin: 84% 13%;
-                background: repeating-conic-gradient(
-                    from 205deg at 84% 13%,
-                    rgba(255, 231, 160, .14) 0deg 8deg,
-                    transparent 8deg 21deg
-                );
-            }
-
-            body[data-scene="sun"] .sky-gradient {
-                background:
-                    radial-gradient(
-                        circle at 84% 13%,
-                        rgba(255, 220, 125, .28),
-                        transparent 27%
-                    ),
-                    linear-gradient(
-                        180deg,
-                        rgba(255, 255, 255, .08),
-                        transparent 75%
-                    );
-            }
-
-            /* Keep the moon toward the upper-right, but away from the edge. */
-            .sky-moon {
-                top: 11%;
-                left: 83%;
-                right: auto;
-                transform: translateX(-50%);
-                filter:
-                    drop-shadow(0 0 8px rgba(205, 225, 255, .72))
-                    drop-shadow(0 0 24px rgba(150, 190, 255, .34));
-            }
-
-            /* Supports either a dedicated moon-ray element or shared ray markup. */
-            .sky-moon-rays,
-            .sky-moon .moon-rays {
-                top: 11%;
-                left: 83%;
-                opacity: .3;
-                filter: blur(10px);
-                transform: translate(-50%, -50%) scale(1.18);
-                transform-origin: center;
-                background: repeating-conic-gradient(
-                    from 8deg at 50% 50%,
-                    rgba(190, 220, 255, .12) 0deg 9deg,
-                    transparent 9deg 25deg
-                );
-            }
-
-            .sky-moon::before {
-                filter: blur(12px);
-                opacity: .55;
-            }
-
-            @media (max-width: 600px) {
-                body[data-scene="sun"] .sky-sun {
-                    top: 9%;
-                    left: 79%;
-                }
-
-                body[data-scene="sun"] .sky-rays {
-                    transform-origin: 79% 12%;
-                    background: repeating-conic-gradient(
-                        from 205deg at 79% 12%,
-                        rgba(255, 231, 160, .13) 0deg 8deg,
-                        transparent 8deg 21deg
-                    );
-                }
-
-                .sky-moon {
-                    top: 10%;
-                    left: 78%;
-                }
-
-                .sky-moon-rays,
-                .sky-moon .moon-rays {
-                    top: 10%;
-                    left: 78%;
-                    transform: translate(-50%, -50%) scale(1.08);
-                }
-            }
-        `;
-
-        document.head.appendChild(style);
-    }
-
     function resize() {
         const ratio = Math.min(devicePixelRatio || 1, 2);
 
         width = innerWidth;
         height = innerHeight;
-
         canvas.width = width * ratio;
         canvas.height = height * ratio;
         canvas.style.width = `${width}px`;
@@ -174,16 +74,16 @@
     function particleCount() {
         const [baseCount] = settings[scene] || settings.clouds;
 
-        if (!['drizzle', 'shower', 'rain', 'thunder'].includes(scene)) {
+        if (!rainScenes.includes(scene)) {
             return Math.round(baseCount * performanceScale);
         }
 
-        const intensity = Math.min(Math.max(precipitation, .3) / 3, 1);
-        const stormBoost = scene === 'thunder' ? 1.25 : 1;
+        const intensity = Math.min(Math.max(precipitation, .5) / 3, 1);
+        const sceneBoost = scene === 'thunder' ? 1.2 : 1;
 
         return Math.round(
-            baseCount * (.55 + intensity * .75) *
-            stormBoost *
+            baseCount * (.85 + intensity * .55) *
+            sceneBoost *
             performanceScale
         );
     }
@@ -192,28 +92,30 @@
         particles = Array.from({ length: particleCount() }, () => ({
             x: Math.random() * width,
             y: Math.random() * height,
-            speed: Math.random() * 1.5 + .5,
+            speed: Math.random() * 1.8 + .8,
             size: Math.random() * 2 + 1,
-            length: Math.random() * 18 + 8,
+            length: Math.random() * 22 + 12,
             drift: Math.random() * 1.2 - .6
         }));
     }
 
     function updateParticle(particle) {
-        const rain = ['drizzle', 'shower', 'rain', 'thunder'].includes(scene);
-
-        if (rain) {
-            const angle = Math.min(windSpeed / 65, 1.4);
-            const speed =
-                scene === 'drizzle' ? 1 :
-                scene === 'shower' ? 1.8 :
-                scene === 'thunder' ? 2.4 : 1.45;
+        if (rainScenes.includes(scene)) {
+            const angle = Math.min(windSpeed / 55, 1.7);
+            const speed = {
+                drizzle: 1,
+                'light-shower': 1.35,
+                shower: 1.8,
+                rain: 2.1,
+                'heavy-rain': 2.4,
+                thunder: 2.8
+            }[scene] || 1;
 
             particle.y += particle.speed * speed;
-            particle.x += angle * 2.2 + windSpeed * .015;
+            particle.x += angle * 2.5 + windSpeed * .018;
 
-            if (particle.y > height + 25) {
-                particle.y = -25;
+            if (particle.y > height + 30) {
+                particle.y = -30;
                 particle.x = Math.random() * width;
             }
 
@@ -241,16 +143,18 @@
     function drawParticle(particle) {
         context.beginPath();
 
-        const rain = ['drizzle', 'shower', 'rain', 'thunder'].includes(scene);
+        if (rainScenes.includes(scene)) {
+            const angle = Math.min(windSpeed / 55, 1.7);
+            const multiplier = {
+                drizzle: .75,
+                'light-shower': .9,
+                shower: 1.15,
+                rain: 1.3,
+                'heavy-rain': 1.45,
+                thunder: 1.65
+            }[scene] || 1;
 
-        if (rain) {
-            const angle = Math.min(windSpeed / 65, 1.4);
-            const lengthMultiplier =
-                scene === 'drizzle' ? .55 :
-                scene === 'shower' ? 1.15 :
-                scene === 'thunder' ? 1.35 : 1;
-
-            const length = particle.length * lengthMultiplier;
+            const length = particle.length * multiplier;
 
             context.moveTo(particle.x, particle.y);
             context.lineTo(
@@ -258,16 +162,17 @@
                 particle.y + length
             );
 
-            context.strokeStyle =
-                scene === 'drizzle'
-                    ? 'rgba(190, 225, 255, .3)'
-                    : scene === 'shower'
-                        ? 'rgba(200, 232, 255, .48)'
-                        : scene === 'thunder'
-                            ? 'rgba(225, 240, 255, .58)'
-                            : 'rgba(205, 232, 255, .45)';
+            const color = {
+                drizzle: 'rgba(200, 230, 255, .48)',
+                'light-shower': 'rgba(205, 233, 255, .58)',
+                shower: 'rgba(210, 237, 255, .68)',
+                rain: 'rgba(215, 240, 255, .74)',
+                'heavy-rain': 'rgba(225, 244, 255, .8)',
+                thunder: 'rgba(235, 248, 255, .9)'
+            }[scene];
 
-            context.lineWidth = scene === 'drizzle' ? .6 : 1;
+            context.strokeStyle = color;
+            context.lineWidth = scene === 'drizzle' ? .8 : 1.15;
             context.stroke();
             return;
         }
@@ -306,7 +211,6 @@
         cancelAnimationFrame(animationFrame);
 
         clearTimeout(scrollTimer);
-
         scrollTimer = setTimeout(() => {
             animationPaused = false;
             canvas.style.visibility = 'visible';
@@ -317,26 +221,19 @@
     function handleVisibilityChange() {
         if (document.hidden) {
             cancelAnimationFrame(animationFrame);
-            return;
+        } else if (!animationPaused) {
+            draw();
         }
-
-        if (!animationPaused) draw();
     }
 
     function updateCloudDetails() {
         const clouds = document.querySelectorAll('.sky-cloud');
-
         if (!clouds.length) return;
 
         const cover = Math.max(0, Math.min(100, Number(cloudCover) || 0));
         const cloudScene = [
-            'clouds',
-            'fog',
-            'rain',
-            'shower',
-            'drizzle',
-            'snow',
-            'thunder'
+            'clouds', 'fog', 'rain', 'light-shower', 'shower',
+            'heavy-rain', 'drizzle', 'snow', 'thunder'
         ].includes(scene);
 
         const coverFactor = cover / 100;
@@ -345,40 +242,50 @@
             : coverFactor * .25;
 
         document.body.style.setProperty('--cloud-cover', `${cover}%`);
-        document.body.style.setProperty(
-            '--cloud-opacity',
-            String(baseOpacity)
-        );
+        document.body.style.setProperty('--cloud-opacity', String(baseOpacity));
 
         clouds.forEach((cloud, index) => {
-            const layerOpacity = Math.max(
-                0,
-                Math.min(1, baseOpacity * (1 - index * .12))
+            cloud.style.opacity = String(
+                Math.max(0, Math.min(1, baseOpacity * (1 - index * .12)))
             );
 
-            cloud.style.opacity = String(layerOpacity);
-            cloud.style.background = `
-                radial-gradient(
-                    ellipse at 28% 35%,
-                    rgba(245, 250, 255, ${.35 + coverFactor * .43}),
-                    rgba(190, 210, 235, ${.25 + coverFactor * .33}) 42%,
-                    rgba(65, 85, 120, ${.25 + coverFactor * .45}) 100%
-                )
-            `;
-
-            cloud.style.boxShadow = `
-                inset -20px -14px 28px rgba(20, 35, 65, ${.12 + coverFactor * .3}),
-                inset 18px 12px 24px rgba(255, 255, 255, ${.08 + coverFactor * .18}),
-                0 14px 30px rgba(5, 15, 35, ${.08 + coverFactor * .2})
-            `;
-
-            cloud.style.filter =
-                scene === 'thunder'
-                    ? 'blur(2px) brightness(.68) saturate(.75)'
-                    : scene === 'shower'
-                        ? 'blur(2px) brightness(.82) saturate(.85)'
-                        : 'blur(2px)';
+            cloud.style.filter = scene === 'thunder'
+                ? 'blur(2px) brightness(.58) saturate(.7)'
+                : scene === 'shower' || scene === 'heavy-rain'
+                    ? 'blur(2px) brightness(.78) saturate(.8)'
+                    : 'blur(2px)';
         });
+    }
+
+    function randomBetween(min, max) {
+        return min + Math.random() * (max - min);
+    }
+
+    function createBoltPath(startX, startY = 0, endY = 100) {
+        const points = [`M${startX} ${startY}`];
+        let x = startX;
+        const segments = 7;
+
+        for (let index = 1; index <= segments; index += 1) {
+            x += randomBetween(-12, 12);
+            points.push(`L${x.toFixed(1)} ${(startY +
+                ((endY - startY) / segments) * index).toFixed(1)}`);
+        }
+
+        return points.join(' ');
+    }
+
+    function createBranchPath(startX, startY, direction) {
+        const branchStart = startY + randomBetween(25, 62);
+        const branchEnd = branchStart + randomBetween(12, 28);
+        const middleX = startX + direction * randomBetween(8, 17);
+        const endX = middleX + direction * randomBetween(8, 20);
+
+        return `
+            M${startX.toFixed(1)} ${branchStart.toFixed(1)}
+            L${middleX.toFixed(1)} ${(branchStart + 7).toFixed(1)}
+            L${endX.toFixed(1)} ${branchEnd.toFixed(1)}
+        `;
     }
 
     function createLightningBolt() {
@@ -388,48 +295,21 @@
         lightningBolt.id = 'stormLightningBolt';
         lightningBolt.setAttribute('aria-hidden', 'true');
 
-        const startX = 25 + Math.random() * 50;
-
-        const boltPath = `
-            M${startX} 0
-            L${startX - 4} 14
-            L${startX + 7} 27
-            L${startX - 8} 42
-            L${startX + 4} 56
-            L${startX - 6} 72
-            L${startX + 2} 88
-            L${startX - 2} 100
-        `;
-
-        const leftBranch = `
-            M${startX - 8} 42
-            L${startX - 22} 50
-            L${startX - 31} 47
-            M${startX - 22} 50
-            L${startX - 25} 60
-        `;
-
-        const rightBranch = `
-            M${startX + 4} 56
-            L${startX + 20} 63
-            L${startX + 31} 58
-            M${startX + 20} 63
-            L${startX + 25} 74
-        `;
-
-        const upperFork = `
-            M${startX + 7} 27
-            L${startX + 19} 34
-            L${startX + 27} 30
-        `;
+        const startX = randomBetween(18, 82);
+        const mainPath = createBoltPath(startX);
+        const branches = [
+            createBranchPath(startX - 3, 0, -1),
+            createBranchPath(startX + 5, 0, 1),
+            createBranchPath(startX - 1, 0, Math.random() > .5 ? -1 : 1)
+        ].join(' ');
 
         lightningBolt.innerHTML = `
             <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-                <path class="lightning-glow" d="${boltPath}"></path>
-                <path class="lightning-main" d="${boltPath}"></path>
-                <path class="lightning-branch" d="${leftBranch}"></path>
-                <path class="lightning-branch" d="${rightBranch}"></path>
-                <path class="lightning-fork" d="${upperFork}"></path>
+                <path class="lightning-glow lightning-branch" d="${branches}"></path>
+                <path class="lightning-main lightning-branch" d="${branches}"></path>
+                <path class="lightning-glow" d="${mainPath}"></path>
+                <path class="lightning-main" d="${mainPath}"></path>
+                <path class="lightning-core" d="${mainPath}"></path>
             </svg>
         `;
 
@@ -443,15 +323,13 @@
 
         const style = document.createElement('style');
         style.textContent = `
-            #stormLightningBolt {
-                isolation: isolate;
-            }
-
             #stormLightningBolt svg {
                 width: 100%;
                 height: 100%;
                 overflow: visible;
-                filter: drop-shadow(0 0 9px rgba(175, 220, 255, .95));
+                filter:
+                    drop-shadow(0 0 8px rgba(115, 205, 255, .95))
+                    drop-shadow(0 0 24px rgba(90, 155, 255, .75));
             }
 
             #stormLightningBolt path {
@@ -462,24 +340,24 @@
             }
 
             #stormLightningBolt .lightning-glow {
-                stroke: rgba(115, 190, 255, .8);
-                stroke-width: 15;
-                opacity: .5;
+                stroke: rgba(70, 170, 255, .8);
+                stroke-width: 24;
+                filter: blur(4px);
             }
 
             #stormLightningBolt .lightning-main {
-                stroke: #f8fcff;
-                stroke-width: 3;
+                stroke: rgba(190, 235, 255, .95);
+                stroke-width: 6;
+                filter: blur(1px);
+            }
+
+            #stormLightningBolt .lightning-core {
+                stroke: #ffffff;
+                stroke-width: 2.2;
             }
 
             #stormLightningBolt .lightning-branch {
-                stroke: #d9efff;
-                stroke-width: 2;
-            }
-
-            #stormLightningBolt .lightning-fork {
-                stroke: #bfe3ff;
-                stroke-width: 1.5;
+                opacity: .75;
             }
         `;
 
@@ -492,20 +370,31 @@
 
         createLightningBolt();
 
-        lightningBolt.animate(
+        const flash = lightningBolt.animate(
             [
                 { opacity: 0 },
-                { opacity: .95, offset: .12 },
-                { opacity: .18, offset: .24 },
-                { opacity: .82, offset: .38 },
-                { opacity: .3, offset: .48 },
+                { opacity: .95, offset: .06 },
+                { opacity: .08, offset: .13 },
+                { opacity: .72, offset: .2 },
+                { opacity: .05, offset: .28 },
+                { opacity: .9, offset: .36 },
+                { opacity: .16, offset: .48 },
+                { opacity: .65, offset: .57 },
                 { opacity: 0, offset: 1 }
             ],
             {
-                duration: 1050,
-                easing: 'ease-out'
+                duration: 1250,
+                easing: 'ease-out',
+                fill: 'forwards'
             }
         );
+
+        flash.finished.finally(() => {
+            if (lightningBolt) {
+                lightningBolt.remove();
+                lightningBolt = null;
+            }
+        });
     }
 
     function startStormLightning() {
@@ -514,10 +403,10 @@
         if (scene !== 'thunder') return;
 
         stormTimer = setInterval(() => {
-            if (Math.random() > .3) {
+            if (Math.random() < .78) {
                 document.dispatchEvent(new CustomEvent('thunder'));
             }
-        }, 9000 + Math.random() * 10000);
+        }, 4200 + Math.random() * 4300);
     }
 
     function setScene(
@@ -533,7 +422,6 @@
         cloudCover = Number(nextCloudCover) || 0;
 
         document.body.dataset.scene = scene;
-
         updateCloudDetails();
         createParticles();
         startStormLightning();
@@ -569,7 +457,6 @@
     addEventListener('scroll', pauseAnimationForScroll, { passive: true });
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    addSceneStyles();
     resize();
     updateCloudDetails();
     draw();
