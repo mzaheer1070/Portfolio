@@ -20,7 +20,8 @@
         error: $('errorMessage'),
         forecast: $('forecastContainer'),
         theme: $('themeToggle'),
-        mapSection: $('mapSection')
+        mapSection: $('mapSection'),
+        localTime: $('localTime')
     };
 
     const conditions = {
@@ -52,6 +53,18 @@
     let hourlyMode = true;
     let lastWeatherData = null;
     let activeRequest = null;
+
+    function syncCinematicState(active) {
+        document.body.classList.toggle('cinematic-fullscreen', active);
+
+        const button = $('fullscreenButton');
+        if (!button) return;
+
+        button.textContent = active
+            ? '⛶ Exit cinematic mode'
+            : '⛶ Cinematic mode';
+        button.setAttribute('aria-pressed', String(active));
+    }
 
     function condition(code) {
         return conditions[code] || ['Unknown conditions', '🌤️', 'clouds'];
@@ -330,13 +343,10 @@
 
         fullscreen.addEventListener('click', toggleFullscreen);
 
-        document.addEventListener('fullscreenchange', () => {
-            const active = Boolean(document.fullscreenElement);
+        fullscreen.setAttribute('aria-pressed', 'false');
 
-            document.body.classList.toggle('cinematic-fullscreen', active);
-            fullscreen.textContent = active
-                ? '⛶ Exit cinematic mode'
-                : '⛶ Cinematic mode';
+        document.addEventListener('fullscreenchange', () => {
+            syncCinematicState(Boolean(document.fullscreenElement));
         });
     }
 
@@ -518,6 +528,8 @@
         lastWeatherData = data;
 
         dom.body.dataset.scene = scene;
+        dom.body.dataset.timezone = data.timezone || '';
+        window.updateLocalTime?.();
         dom.body.dataset.daytime = Number(current.is_day) === 1
             ? 'day'
             : 'night';
@@ -684,11 +696,14 @@
         try {
             if (document.fullscreenElement) {
                 await document.exitFullscreen();
-            } else {
-                await document.documentElement.requestFullscreen();
+                return;
             }
+
+            await document.documentElement.requestFullscreen();
         } catch {
-            document.body.classList.toggle('cinematic-fullscreen');
+            syncCinematicState(
+                !document.body.classList.contains('cinematic-fullscreen')
+            );
         }
     }
 
