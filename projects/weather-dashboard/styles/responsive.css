@@ -18,6 +18,11 @@
         gap: 24px;
     }
 
+    .local-time {
+        max-width: 100%;
+        font-size: .85rem;
+    }
+
     #weatherMap {
         height: 300px;
     }
