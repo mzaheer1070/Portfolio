@@ -2,6 +2,8 @@ body {
     --scene-top: #101a35;
     --scene-bottom: #172a52;
     --scene-glow: rgba(110, 170, 255, .18);
+    --celestial-x: 88%;
+    --celestial-y: 15%;
     background:
         radial-gradient(circle at 50% 12%, var(--scene-glow), transparent 42%),
         linear-gradient(135deg, var(--scene-top), var(--scene-bottom));
@@ -44,7 +46,12 @@ body[data-scene="fog"] {
 }
 
 body[data-scene="rain"],
-body[data-scene="drizzle"] {
+body[data-scene="drizzle"],
+body[data-scene="light-rain"],
+body[data-scene="light-shower"],
+body[data-scene="shower"],
+body[data-scene="heavy-rain"],
+body[data-scene="thunder"] {
     --scene-glow: rgba(70, 180, 255, .28);
 }
 
@@ -101,8 +108,13 @@ body[data-scene="thunder"] {
 }
 
 @keyframes windMove {
-    from { transform: translateX(-220px) rotate(-8deg); }
-    to { transform: translateX(calc(100vw + 220px)) rotate(-8deg); }
+    from {
+        transform: translateX(-220px) rotate(-8deg);
+    }
+
+    to {
+        transform: translateX(calc(100vw + 220px)) rotate(-8deg);
+    }
 }
 
 #cinematicSky,
@@ -160,12 +172,13 @@ body[data-scene="thunder"] {
 .sky-sun,
 .sky-moon {
     position: absolute;
-    top: 12%;
-    left: 50%;
+    top: var(--celestial-y);
+    right: calc(100% - var(--celestial-x));
+    left: auto;
     width: clamp(90px, 13vw, 180px);
     aspect-ratio: 1;
     border-radius: 50%;
-    transform: translateX(-50%);
+    transform: translate(50%, -50%);
     opacity: 0;
     transition: opacity 1s ease, filter 1s ease;
 }
@@ -186,6 +199,67 @@ body[data-daytime="day"][data-celestial="partial"] .sky-sun,
 body[data-daytime="night"][data-celestial="full"] .sky-moon,
 body[data-daytime="night"][data-celestial="partial"] .sky-moon {
     opacity: 1;
+}
+
+.sky-rays {
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            ellipse 38% 28% at var(--celestial-x) var(--celestial-y),
+            rgba(255, 235, 165, .3),
+            transparent 72%
+        ),
+        repeating-conic-gradient(
+            from 235deg at var(--celestial-x) var(--celestial-y),
+            rgba(255, 226, 145, .11) 0deg 6deg,
+            transparent 6deg 17deg
+        );
+    filter: blur(12px);
+    mix-blend-mode: screen;
+    transform: scale(1.04);
+    transition: opacity 1.2s ease, filter 1.2s ease;
+}
+
+body[data-daytime="day"][data-celestial="full"] .sky-rays {
+    opacity: .72;
+}
+
+body[data-daytime="day"][data-celestial="partial"] .sky-rays {
+    opacity: .38;
+}
+
+body[data-daytime="night"][data-celestial="full"] .sky-rays,
+body[data-daytime="night"][data-celestial="partial"] .sky-rays {
+    opacity: .28;
+    background:
+        radial-gradient(
+            ellipse 35% 25% at var(--celestial-x) var(--celestial-y),
+            rgba(190, 215, 255, .2),
+            transparent 72%
+        ),
+        repeating-conic-gradient(
+            from 235deg at var(--celestial-x) var(--celestial-y),
+            rgba(190, 215, 255, .07) 0deg 5deg,
+            transparent 5deg 18deg
+        );
+    filter: blur(16px);
+}
+
+body[data-scene="rain"] .sky-rays,
+body[data-scene="drizzle"] .sky-rays,
+body[data-scene="light-rain"] .sky-rays,
+body[data-scene="light-shower"] .sky-rays,
+body[data-scene="shower"] .sky-rays,
+body[data-scene="heavy-rain"] .sky-rays {
+    opacity: .16;
+    filter: blur(18px);
+}
+
+body[data-scene="thunder"] .sky-rays {
+    opacity: .06;
+    filter: blur(22px);
 }
 
 body[data-daytime="night"] .sky-stars {
@@ -253,6 +327,10 @@ body[data-scene="clouds"] .sky-cloud,
 body[data-scene="fog"] .sky-cloud,
 body[data-scene="rain"] .sky-cloud,
 body[data-scene="drizzle"] .sky-cloud,
+body[data-scene="light-rain"] .sky-cloud,
+body[data-scene="light-shower"] .sky-cloud,
+body[data-scene="shower"] .sky-cloud,
+body[data-scene="heavy-rain"] .sky-cloud,
 body[data-scene="snow"] .sky-cloud,
 body[data-scene="thunder"] .sky-cloud {
     opacity: .85;
@@ -279,6 +357,10 @@ body[data-daytime="day"][data-celestial="full"] .sky-rays {
 }
 
 body[data-scene="rain"] .sky-gradient,
+body[data-scene="light-rain"] .sky-gradient,
+body[data-scene="light-shower"] .sky-gradient,
+body[data-scene="shower"] .sky-gradient,
+body[data-scene="heavy-rain"] .sky-gradient,
 body[data-scene="thunder"] .sky-gradient,
 body[data-scene="snow"] .sky-gradient {
     filter: brightness(.65);
@@ -289,13 +371,91 @@ body[data-scene="sun"] .sky-gradient {
 }
 
 @keyframes cloudDrift {
-    from { transform: translateX(-30vw); }
-    to { transform: translateX(30vw); }
+    from {
+        transform: translateX(-30vw);
+    }
+
+    to {
+        transform: translateX(30vw);
+    }
 }
 
 @keyframes sunPulse {
-    from { filter: brightness(.95); }
-    to { filter: brightness(1.12); }
+    from {
+        filter: brightness(.95);
+    }
+
+    to {
+        filter: brightness(1.12);
+    }
+}
+
+/* Weather intensity differences */
+body[data-scene="drizzle"] #weatherCanvas {
+    opacity: 1;
+    filter: brightness(3.2) contrast(1.35) saturate(1.2);
+}
+
+body[data-scene="light-rain"] #weatherCanvas {
+    opacity: .95;
+    filter: brightness(1.8) contrast(1.15);
+}
+
+body[data-scene="drizzle"] #windEffect,
+body[data-scene="light-rain"] #windEffect {
+    opacity: .25;
+}
+
+body[data-scene="light-shower"] #weatherCanvas {
+    opacity: .68;
+}
+
+body[data-scene="light-shower"] #windEffect {
+    opacity: .5;
+}
+
+body[data-scene="shower"] #weatherCanvas,
+body[data-scene="rain"] #weatherCanvas {
+    opacity: .9;
+}
+
+body[data-scene="shower"] #windEffect,
+body[data-scene="rain"] #windEffect {
+    opacity: .75;
+}
+
+body[data-scene="heavy-rain"] #weatherCanvas {
+    opacity: 1;
+    filter: brightness(1.12) saturate(1.15);
+}
+
+body[data-scene="heavy-rain"] #windEffect {
+    opacity: 1;
+}
+
+body[data-scene="thunder"] #weatherCanvas {
+    opacity: 1;
+    filter: brightness(.8) contrast(1.25) saturate(.85);
+}
+
+body[data-scene="thunder"] #windEffect {
+    opacity: .95;
+}
+
+body[data-scene="thunder"] .sky-cloud {
+    opacity: 1;
+    background: rgba(90, 110, 145, .5);
+    filter: blur(3px) brightness(.65);
+}
+
+body[data-scene="drizzle"] .sky-cloud,
+body[data-scene="light-rain"] .sky-cloud {
+    opacity: .65;
+}
+
+body[data-scene="heavy-rain"] .sky-cloud,
+body[data-scene="thunder"] .sky-cloud {
+    animation-duration: 28s;
 }
 
 @media (prefers-reduced-motion: reduce) {
