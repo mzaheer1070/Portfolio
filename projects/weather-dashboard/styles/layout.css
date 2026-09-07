@@ -84,6 +84,31 @@
     margin-bottom: 28px;
 }
 
+.local-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-size: .92rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    border: 1px solid rgba(174, 190, 255, .28);
+    border-radius: 999px;
+    background: rgba(142, 167, 255, .12);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .12);
+}
+
+.local-time::before {
+    width: 7px;
+    height: 7px;
+    content: "";
+    border-radius: 50%;
+    background: #7dffb2;
+    box-shadow: 0 0 12px rgba(125, 255, 178, .9);
+}
+
 .location-info,
 .weather-main,
 .weather-stats,
