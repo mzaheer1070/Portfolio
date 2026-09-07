@@ -84,6 +84,7 @@
                     <p class="eyebrow">CURRENT CONDITIONS</p>
                     <h2 id="cityName" class="city-name"></h2>
                     <p id="currentDate" class="current-date"></p>
+                    <p id="localTime" class="local-time" aria-live="off">Local time · --:--:--</p>
                 </div>
 
                 <div class="weather-main">
@@ -145,6 +146,34 @@
     <footer class="footer">
         <p>Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></p>
     </footer>
+
+    <script>
+        function updateLocalTime() {
+            const timeElement = document.getElementById("localTime");
+            if (!timeElement) return;
+
+            const timezone = document.body.dataset.timezone;
+            const options = {
+                hour: "numeric",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+                timeZone: timezone || undefined
+            };
+
+            try {
+                const time = new Intl.DateTimeFormat(undefined, options)
+                    .format(new Date());
+                timeElement.textContent = `Local time · ${time}`;
+            } catch {
+                timeElement.textContent = "Local time · --:--:--";
+            }
+        }
+
+        window.updateLocalTime = updateLocalTime;
+        updateLocalTime();
+        setInterval(updateLocalTime, 1000);
+    </script>
 
     <script src="js/autocomplete.js"></script>
     <script src="js/sound.js"></script>
